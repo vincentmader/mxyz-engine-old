@@ -1,0 +1,7 @@
+[package]
+    name = "mxyz-engine"
+    version = "0.1.0"
+    authors = ["Vincent C. Mader <vincent@mader.xyz>"]
+    edition = "2018"
+
+[dependencies]
