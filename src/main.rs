@@ -1,3 +1,6 @@
+use mxyz_engine::Engine;
+
 fn main() {
-    println!("Hello, world!");
+    println!("\nHello, mxyz-engine! :)");
+    let engine = Engine::new();
 }
