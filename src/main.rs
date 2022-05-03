@@ -1,6 +1,10 @@
 use mxyz_engine::Engine;
 
+const NR_OF_STEPS: usize = 1670;
+
 fn main() {
-    println!("\nHello, mxyz-engine! :)");
-    let engine = Engine::new();
+    let mut engine = Engine::new();
+    engine.init();
+    engine.run(Some(NR_OF_STEPS));
+    println!("{:#?}", engine);
 }
