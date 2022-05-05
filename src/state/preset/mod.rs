@@ -39,13 +39,11 @@ pub fn initialize(config: &mut EngineConfig) -> Vec<System> {
 
     // INTERACTIONS
     // TODO
-    config.interactions.insert(
+    let interactions = HashMap::from([(
         id,
-        HashMap::from([(
-            id,
-            vec![Interaction::NewtonianGravity(Integrator::EulerExplicit)],
-        )]),
-    );
+        vec![Interaction::NewtonianGravity(Integrator::EulerExplicit)],
+    )]);
+    config.interactions.insert(id, interactions);
 
     systems
 }

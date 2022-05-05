@@ -12,7 +12,7 @@ use super::system::System;
 pub struct State {
     // systems: Vec<EntityVector>,
     // id: usize,
-    systems: Vec<System>,
+    pub systems: Vec<System>,
 }
 impl State {
     /// Creates new State
