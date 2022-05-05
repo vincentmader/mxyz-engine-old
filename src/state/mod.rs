@@ -1,37 +1,40 @@
-// use super::system::EntityVector;
+#![allow(unused_doc_comments)]
+pub mod preset;
+
 use super::config::EngineConfig;
 use super::entity::attribute;
+use super::integrator::Integrator;
 use super::interaction::Interaction;
-// use super::system::Entities;
-use super::system::ForceField;
-use super::system::PhysicalBodies;
 use super::system::System;
 
 /// State
 #[derive(Debug, Clone)]
 pub struct State {
     // systems: Vec<EntityVector>,
-    id: usize,
+    // id: usize,
     systems: Vec<System>,
 }
 impl State {
     /// Creates new State
-    pub fn new(id: usize) -> Self {
-        let systems = vec![
-            System::ForceField(ForceField::new()),
-            System::PhysicalBodies(PhysicalBodies::new()),
-            // System::ForceField(Entities::new()),
-            // System::PhysicalBodies(Entities::new()),
-        ];
-        State { id, systems }
+    pub fn new() -> Self {
+        // let id = 0;
+        let systems = vec![];
+        State {
+            // id,
+            systems,
+        }
     }
+
+    /// Initializes State & Configuration
+    pub fn init(&mut self, config: &mut EngineConfig) {
+        self.systems = preset::initialize(config);
+    }
+
     /// Forwards State
     pub fn step(&mut self, config: &EngineConfig, states: &Vec<State>) {
         let current_state = &states[config.step_id];
-        let interactions: Vec<Interaction> = vec![Interaction::NewtonianGravity];
-        // let interactions: Vec<Interaction> = vec![];
 
-        let neighborhoods = prepare_neighborhoods();
+        let _neighborhoods = prepare_neighborhoods();
         //  sys_id -> fn(entity_id) -> Vec<entity_jd>
         //  TODO implement search for interaction partners
         //    - GameOfLife: create function, later return cells around entity_id
@@ -44,12 +47,21 @@ impl State {
                 // let position = [0., 0., 0.];
                 // let neighborhood: Vec<usize> = neighborhoods[sys_jd](position);
                 // use cache? -> tree speed-up
+                // let tree = Tree {};
 
-                // let interactions = config.interactions[sys_id][sys_id];
-                for interaction in &interactions {
+                let empty = vec![];
+                let interactions = match &config.interactions.get(&sys_id) {
+                    Some(val) => match val.get(&sys_jd) {
+                        Some(val) => val,
+                        None => &empty,
+                    },
+                    None => &empty,
+                };
+
+                for interaction in interactions.iter() {
                     match interaction {
-                        // Newtonian Gravity
-                        Interaction::NewtonianGravity => match sys_1 {
+                        /// Newtonian Gravity
+                        Interaction::NewtonianGravity(integrator) => match sys_1 {
                             System::PhysicalBodies(sys_1) => match sys_2 {
                                 System::PhysicalBodies(sys_2) => {
                                     for (ent_id, entity_1) in sys_1.entities.iter_mut().enumerate()
@@ -58,61 +70,69 @@ impl State {
                                         {
                                             let ent_id = (sys_id, ent_id);
                                             let ent_jd = (sys_jd, ent_jd);
-                                            a((ent_id, entity_1), (ent_jd, entity_2));
+                                            match integrator {
+                                                Integrator::EulerExplicit => {
+                                                    euler_exp_gravity(
+                                                        (ent_id, entity_1),
+                                                        (ent_jd, entity_2),
+                                                    );
+                                                }
+                                                _ => {}
+                                            }
                                         }
-                                        // println!("aaaaaa",);
                                     }
                                     // e.g. planets influencing each other
                                 }
-                                System::ForceField(sys_2) => {
+                                System::ForceField(_sys_2) => {
                                     // e.g. object falling to the ground
                                 }
                             },
-                            System::ForceField(sys_1) => match sys_2 {
-                                System::PhysicalBodies(sys_2) => {
+                            System::ForceField(_sys_1) => match sys_2 {
+                                System::PhysicalBodies(_sys_2) => {
                                     // e.g. field around star
                                 }
-                                System::ForceField(sys_2) => {
+                                System::ForceField(_sys_2) => {
                                     // e.g. gravity waves
                                 }
                             },
                         },
-                        Interaction::Coulomb => match sys_1 {
-                            System::PhysicalBodies(sys_1) => match sys_2 {
-                                System::PhysicalBodies(sys_2) => {
+                        /// Coulomb Interaction
+                        Interaction::Coulomb(_integrator) => match sys_1 {
+                            System::PhysicalBodies(_sys_1) => match sys_2 {
+                                System::PhysicalBodies(_sys_2) => {
                                     // e.g. proton-proton repulsion
                                 }
-                                System::ForceField(sys_2) => {
+                                System::ForceField(_sys_2) => {
                                     // e.g. charges accelerated by voltage
                                 }
                             },
-                            System::ForceField(sys_1) => match sys_2 {
-                                System::PhysicalBodies(sys_2) => {
+                            System::ForceField(_sys_1) => match sys_2 {
+                                System::PhysicalBodies(_sys_2) => {
                                     // e.g. electro-static field generated by charges
                                 }
-                                System::ForceField(sys_2) => {
+                                System::ForceField(_sys_2) => {
                                     // e.g. light
                                 }
                             },
                         },
                         Interaction::Diffusion => match sys_1 {
-                            System::ForceField(sys_1) => match sys_2 {
-                                System::ForceField(sys_2) => {
+                            System::ForceField(_sys_1) => match sys_2 {
+                                System::ForceField(_sys_2) => {
                                     // e.g. tracer density field
                                 }
                                 _ => {}
                             },
                             _ => {}
                         },
-                        Interaction::LennardJones => match sys_1 {
-                            System::PhysicalBodies(sys_1) => match sys_2 {
-                                System::PhysicalBodies(sys_2) => {
+                        Interaction::LennardJones(_integrator) => match sys_1 {
+                            System::PhysicalBodies(_sys_1) => match sys_2 {
+                                System::PhysicalBodies(_sys_2) => {
                                     // e.g. atom-atom interaction
                                 }
                                 _ => {}
                             },
-                            System::ForceField(sys_1) => match sys_2 {
-                                System::PhysicalBodies(sys_2) => {
+                            System::ForceField(_sys_1) => match sys_2 {
+                                System::PhysicalBodies(_sys_2) => {
                                     // for visualization?
                                 }
                                 _ => {}
@@ -122,19 +142,19 @@ impl State {
                             _ => {}
                         },
                         Interaction::Collision => match sys_1 {
-                            System::PhysicalBodies(sys_1) => match sys_2 {
-                                System::PhysicalBodies(sys_2) => {
+                            System::PhysicalBodies(_sys_1) => match sys_2 {
+                                System::PhysicalBodies(_sys_2) => {
                                     // e.g. billiard balls
                                 }
-                                System::ForceField(sys_2) => {
+                                System::ForceField(_sys_2) => {
                                     // e.g. wall collisions (?)
                                 }
                             },
-                            System::ForceField(sys_1) => match sys_2 {
-                                System::PhysicalBodies(sys_2) => {
+                            System::ForceField(_sys_1) => match sys_2 {
+                                System::PhysicalBodies(_sys_2) => {
                                     // e.g. ball breaking window
                                 }
-                                System::ForceField(sys_2) => {
+                                System::ForceField(_sys_2) => {
                                     // ?
                                 }
                             },
@@ -147,13 +167,7 @@ impl State {
     }
 }
 
-enum Tree {
-    Sectors, // all nodes from same + neighboring sectors
-    QuadOct, // quad/oct tree, return all nodes in opening angle
-    Total,   // all nodes are returned
-}
-//   x,y,z   ->   vec[node]
-fn a<T>(mass_obj_1: ((usize, usize), &mut T), mass_obj_2: ((usize, usize), &T))
+fn euler_exp_gravity<T>(mass_obj_1: ((usize, usize), &mut T), mass_obj_2: ((usize, usize), &T))
 where
     T: attribute::Mass + attribute::Position + attribute::Velocity,
 {
@@ -171,7 +185,7 @@ where
     // );
 
     const G: f64 = 1.;
-    const dt: f64 = 0.01;
+    const DT: f64 = 0.01;
     let m1 = mass_obj_1.get_mass();
     let m2 = mass_obj_2.get_mass();
     let pos1 = mass_obj_1.get_position();
@@ -187,24 +201,31 @@ where
     let vel1: Vec<f64> = vel1
         .iter()
         .enumerate()
-        .map(|(i, v)| v + force * dr[i] / r * dt)
+        .map(|(i, v)| v + force * dr[i] / r * DT)
         .collect();
 
     let pos1 = mass_obj_1.get_mut_position();
     let a: Vec<f64> = pos1
         .iter()
         .enumerate()
-        .map(|(i, x)| x + vel1[i] * dt)
+        .map(|(i, x)| x + vel1[i] * DT)
         .collect();
     *pos1 = [a[0], a[1], a[2]];
 }
 
 fn prepare_neighborhoods() -> Vec<fn() -> Vec<usize>> {
     // let systems = 0..2;
-    let mut res = vec![];
+    let res = vec![];
     // for system in systems {
     //     let f = || vec![];
     //     res.push(f);
     // }
     res
 }
+
+// enum Tree {
+//     // x,y,z   ->   vec[node]
+//     Sectors, // all nodes from same + neighboring sectors
+//     QuadOct, // quad/oct tree, return all nodes in opening angle
+//     Total,   // all nodes are returned
+// }

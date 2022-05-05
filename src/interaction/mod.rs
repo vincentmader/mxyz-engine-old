@@ -1,9 +1,12 @@
+use super::integrator::Integrator;
+
 #[derive(Debug)]
 pub enum Interaction {
+    NewtonianGravity(Integrator),
+    Coulomb(Integrator),
+    LennardJones(Integrator),
+
     Collision,
-    NewtonianGravity,
-    Coulomb,
-    LennardJones,
     Cohesion,
     Avoidance,
     Alignment,
