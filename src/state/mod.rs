@@ -1,15 +1,19 @@
 #![allow(unused_doc_comments)]
+#![allow(dead_code)]
+#![allow(unused_variables)]
+#![allow(unused_imports)]
+#![allow(unreachable_patterns)]
 pub mod preset;
 
 use super::config::EngineConfig;
-use super::entity::attribute;
 use super::integrator::Integrator;
 use super::interaction::Interaction;
 use super::system::System;
+use crate::attribute;
 use preset::SimulationId;
 
 /// State Structure
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct State {
     pub id: usize,
     pub systems: Vec<System>,
@@ -29,9 +33,9 @@ impl State {
     pub fn step(&mut self, config: &EngineConfig, states: &Vec<State>) {
         let current_state = &states[config.step_id];
 
+        //  TODO implement search for interaction partners
         let _neighborhoods = prepare_neighborhoods();
         //  sys_id -> fn(entity_id) -> Vec<entity_jd>
-        //  TODO implement search for interaction partners
         //    - GameOfLife: create function, later return cells around entity_id
         //    - PhysicalBodies: construct tree -> later return Vec<entity_jd> for entity_id
         //    - only for system that are "felt" by others
@@ -45,177 +49,99 @@ impl State {
                 // let tree = Tree {};
 
                 let empty = vec![];
-                let interactions = match &config.interactions.get(&sys_id) {
-                    Some(val) => match val.get(&sys_jd) {
-                        Some(val) => val,
-                        None => &empty,
-                    },
+                let interactions = match get_interactions(&config, sys_id) {
                     None => &empty,
+                    Some(interactions) => interactions,
                 };
 
-                trait Ao {
-                    fn auu(&self) -> Option<Self>
-                    where
-                        Self: Sized,
-                    {
-                        Option::None
-                    }
-                }
+                use System::DiscreteField;
+                use System::PhysicalObjects;
 
-                for interaction in interactions.iter() {
-                    match interaction {
-                        /// Newtonian Gravity
-                        Interaction::NewtonianGravity(integrator) => match sys_1 {
-                            System::PhysicalObjects(sys_1) => match sys_2 {
-                                System::PhysicalObjects(sys_2) => {
-                                    for (ent_id, entity_1) in sys_1.entities.iter_mut().enumerate()
-                                    {
-                                        for (ent_jd, entity_2) in sys_2.entities.iter().enumerate()
-                                        {
-                                            let ent_id = (sys_id, ent_id);
-                                            let ent_jd = (sys_jd, ent_jd);
-                                            match integrator {
-                                                Integrator::EulerExplicit => {
-                                                    euler_exp_gravity(
-                                                        (ent_id, entity_1),
-                                                        (ent_jd, entity_2),
-                                                    );
-                                                }
-                                                _ => {}
-                                            }
-                                        }
-                                    }
-                                    // e.g. planets influencing each other
-                                }
-                                System::DiscreteField(_sys_2) => {
-                                    // e.g. object falling to the ground
-                                }
-                            },
-                            System::DiscreteField(_sys_1) => match sys_2 {
-                                System::PhysicalObjects(_sys_2) => {
-                                    // e.g. field around star
-                                }
-                                System::DiscreteField(_sys_2) => {
-                                    // e.g. gravity waves
-                                }
-                            },
+                for interaction in interactions.into_iter() {
+                    println!("{:?}", interaction);
+                    match sys_1 {
+                        DiscreteField(sys_1) => match sys_2 {
+                            DiscreteField(sys_2) => {
+                                sys_1.interact_with_discrete_field(&sys_2, &interaction)
+                            }
+                            PhysicalObjects(sys_2) => {
+                                sys_1.interact_with_physical_objects(&sys_2, interaction)
+                            }
+                            _ => todo!(),
                         },
-                        /// Coulomb Interaction
-                        Interaction::Coulomb(_integrator) => match sys_1 {
-                            System::PhysicalObjects(_sys_1) => match sys_2 {
-                                System::PhysicalObjects(_sys_2) => {
-                                    // e.g. proton-proton repulsion
-                                }
-                                System::DiscreteField(_sys_2) => {
-                                    // e.g. charges accelerated by voltage
-                                }
-                            },
-                            System::DiscreteField(_sys_1) => match sys_2 {
-                                System::PhysicalObjects(_sys_2) => {
-                                    // e.g. electro-static field generated by charges
-                                }
-                                System::DiscreteField(_sys_2) => {
-                                    // e.g. light
-                                }
-                            },
+                        PhysicalObjects(sys_1) => match sys_2 {
+                            DiscreteField(sys_2) => {
+                                sys_1.interact_with_discrete_field(&sys_2, &interaction)
+                            }
+                            PhysicalObjects(sys_2) => {
+                                sys_1.interact_with_physical_objects(&sys_2, interaction)
+                            }
+                            _ => todo!(),
                         },
-                        Interaction::Diffusion => match sys_1 {
-                            System::DiscreteField(_sys_1) => match sys_2 {
-                                System::DiscreteField(_sys_2) => {
-                                    // e.g. tracer density field
-                                }
-                                _ => {}
-                            },
-                            _ => {}
-                        },
-                        Interaction::LennardJones(_integrator) => match sys_1 {
-                            System::PhysicalObjects(_sys_1) => match sys_2 {
-                                System::PhysicalObjects(_sys_2) => {
-                                    // e.g. atom-atom interaction
-                                }
-                                _ => {}
-                            },
-                            System::DiscreteField(_sys_1) => match sys_2 {
-                                System::PhysicalObjects(_sys_2) => {
-                                    // for visualization?
-                                }
-                                _ => {}
-                            },
-                        },
-                        Interaction::GameOfLife => match sys_1 {
-                            _ => {}
-                        },
-                        Interaction::Collision => match sys_1 {
-                            System::PhysicalObjects(_sys_1) => match sys_2 {
-                                System::PhysicalObjects(_sys_2) => {
-                                    // e.g. billiard balls
-                                }
-                                System::DiscreteField(_sys_2) => {
-                                    // e.g. wall collisions (?)
-                                }
-                            },
-                            System::DiscreteField(_sys_1) => match sys_2 {
-                                System::PhysicalObjects(_sys_2) => {
-                                    // e.g. ball breaking window
-                                }
-                                System::DiscreteField(_sys_2) => {
-                                    // ?
-                                }
-                            },
-                        },
-                        _ => {}
-                    };
+                        _ => todo!(),
+                    }
                 }
             }
         }
     }
 }
 
-fn euler_exp_gravity<T>(mass_obj_1: ((usize, usize), &mut T), mass_obj_2: ((usize, usize), &T))
-where
-    T: attribute::Mass + attribute::Position + attribute::Velocity,
-{
-    let (ent_id, ent_jd) = (mass_obj_1.0, mass_obj_2.0);
-    if ent_id == ent_jd {
-        return ();
-    }
-    let mass_obj_1 = mass_obj_1.1;
-    let mass_obj_2 = mass_obj_2.1;
-    // println!("{:?} == {:?}", ent_id, ent_jd);
-    // println!(
-    //     "{:?} == {:?}",
-    //     mass_obj_1.get_position(),
-    //     mass_obj_2.get_position()
-    // );
-
-    const G: f64 = 1.;
-    const DT: f64 = 0.01;
-    let m1 = mass_obj_1.get_mass();
-    let m2 = mass_obj_2.get_mass();
-    let pos1 = mass_obj_1.get_position();
-    let pos2 = mass_obj_2.get_position();
-
-    let dr: Vec<f64> = (0..3).map(|i| pos2[i] - pos1[i]).collect();
-    // println!("{:?} {:?}", pos1, pos2);
-    // println!("{:?}", dr);
-    let r = (0..3).map(|i| dr[i].powf(2.)).sum::<f64>().powf(0.5);
-    let force = G * (m1 * m2) / r.powf(2.);
-
-    let vel1 = mass_obj_1.get_mut_velocity();
-    let vel1: Vec<f64> = vel1
-        .iter()
-        .enumerate()
-        .map(|(i, v)| v + force * dr[i] / r * DT)
-        .collect();
-
-    let pos1 = mass_obj_1.get_mut_position();
-    let a: Vec<f64> = pos1
-        .iter()
-        .enumerate()
-        .map(|(i, x)| x + vel1[i] * DT)
-        .collect();
-    *pos1 = [a[0], a[1], a[2]];
+pub fn get_interactions(config: &EngineConfig, sys_id: usize) -> Option<&Vec<Interaction>> {
+    let interactions = match config.interactions.get(&sys_id) {
+        Some(val) => match val.get(&sys_id) {
+            Some(val) => Some(val.clone()),
+            None => None,
+        },
+        None => None,
+    };
+    interactions
 }
+
+// fn euler_exp_gravity<T>(mass_obj_1: ((usize, usize), &mut T), mass_obj_2: ((usize, usize), &T))
+// where
+//     T: attribute::Mass + attribute::Position + attribute::Velocity,
+// {
+//     let (ent_id, ent_jd) = (mass_obj_1.0, mass_obj_2.0);
+//     if ent_id == ent_jd {
+//         return ();
+//     }
+//     let mass_obj_1 = mass_obj_1.1;
+//     let mass_obj_2 = mass_obj_2.1;
+//     // println!("{:?} == {:?}", ent_id, ent_jd);
+//     // println!(
+//     //     "{:?} == {:?}",
+//     //     mass_obj_1.get_position(),
+//     //     mass_obj_2.get_position()
+//     // );
+
+//     const G: f64 = 1.;
+//     const DT: f64 = 0.01;
+//     let m1 = mass_obj_1.get_mass();
+//     let m2 = mass_obj_2.get_mass();
+//     let pos1 = mass_obj_1.get_position();
+//     let pos2 = mass_obj_2.get_position();
+
+//     let dr: Vec<f64> = (0..3).map(|i| pos2[i] - pos1[i]).collect();
+//     // println!("{:?} {:?}", pos1, pos2);
+//     // println!("{:?}", dr);
+//     let r = (0..3).map(|i| dr[i].powf(2.)).sum::<f64>().powf(0.5);
+//     let force = G * (m1 * m2) / r.powf(2.);
+
+//     let vel1 = mass_obj_1.get_mut_velocity();
+//     let vel1: Vec<f64> = vel1
+//         .iter()
+//         .enumerate()
+//         .map(|(i, v)| v + force * dr[i] / r * DT)
+//         .collect();
+
+//     let pos1 = mass_obj_1.get_mut_position();
+//     let a: Vec<f64> = pos1
+//         .iter()
+//         .enumerate()
+//         .map(|(i, x)| x + vel1[i] * DT)
+//         .collect();
+//     *pos1 = [a[0], a[1], a[2]];
+// }
 
 fn prepare_neighborhoods() -> Vec<fn() -> Vec<usize>> {
     // let systems = 0..2;
