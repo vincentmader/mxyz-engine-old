@@ -1,4 +1,4 @@
-use crate::entity::PhysicalObject;
+use crate::entity::object::PhysicalObject;
 
 #[derive(Clone)]
 /// System: Physical Objects

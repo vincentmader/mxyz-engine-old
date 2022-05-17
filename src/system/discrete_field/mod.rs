@@ -1,4 +1,4 @@
-use crate::entity::DiscreteFieldCell;
+use crate::entity::field::DiscreteFieldCell;
 
 #[derive(Clone)]
 /// System: Force Field
