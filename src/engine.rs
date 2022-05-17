@@ -1,10 +1,8 @@
 #![allow(dead_code)]
-
 use super::config::EngineConfig;
 use super::state::preset::SimulationId;
 use super::state::State;
 
-#[derive(Debug)]
 /// Simulation Engine
 pub struct Engine {
     pub config: EngineConfig,
@@ -25,14 +23,12 @@ impl Engine {
     }
     /// Runs Engine
     pub fn run(&mut self) {
-        for _ in 0..self.config.max_step_id {
-            self.step();
-        }
+        let n = self.config.max_step_id;
+        let _: Vec<()> = (0..n).map(|_| self.step()).collect();
     }
     /// Forwards engine by one time-step
     pub fn step(&mut self) {
-        let current = &self.states[self.config.step_id];
-        let mut next = current.clone();
+        let mut next = self.states[self.config.step_id].clone();
         next.step(&self.config, &self.states);
         self.states.push(next);
         self.config.step_id += 1;
