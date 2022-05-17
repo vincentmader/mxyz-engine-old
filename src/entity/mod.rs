@@ -4,13 +4,13 @@ use attribute::*;
 pub trait Entity {}
 
 #[derive(Debug, Clone)]
-pub struct PhysicalBody {
+pub struct PhysicalObject {
     pub mass: f64,
     pub position: [f64; 3],
     pub velocity: [f64; 3],
 }
-impl Entity for PhysicalBody {}
-impl Mass for PhysicalBody {
+impl Entity for PhysicalObject {}
+impl Mass for PhysicalObject {
     fn get_mass(&self) -> &f64 {
         &self.mass
     }
@@ -18,7 +18,7 @@ impl Mass for PhysicalBody {
         &mut self.mass
     }
 }
-impl Position for PhysicalBody {
+impl Position for PhysicalObject {
     fn get_position(&self) -> &[f64; 3] {
         &self.position
     }
@@ -26,7 +26,7 @@ impl Position for PhysicalBody {
         &mut self.position
     }
 }
-impl Velocity for PhysicalBody {
+impl Velocity for PhysicalObject {
     fn get_velocity(&self) -> &[f64; 3] {
         &self.velocity
     }
@@ -34,9 +34,9 @@ impl Velocity for PhysicalBody {
         &mut self.velocity
     }
 }
-impl PhysicalBody {
+impl PhysicalObject {
     pub fn new(mass: f64, position: [f64; 3], velocity: [f64; 3]) -> Self {
-        PhysicalBody {
+        PhysicalObject {
             mass,
             position,
             velocity,
@@ -45,21 +45,18 @@ impl PhysicalBody {
 }
 
 #[derive(Debug, Clone)]
-pub struct FluidCell {}
-
-#[derive(Debug, Clone)]
-pub struct ForceVector {
+pub struct FieldCell {
     mass: f64,
 }
-impl Entity for ForceVector {}
-impl Mass for ForceVector {
+impl Entity for FieldCell {}
+impl Mass for FieldCell {
     fn get_mut_mass(&mut self) -> &mut f64 {
         &mut self.mass
     }
 }
-impl ForceVector {
+impl FieldCell {
     pub fn new() -> Self {
         let mass = 0.;
-        ForceVector { mass }
+        FieldCell { mass }
     }
 }
