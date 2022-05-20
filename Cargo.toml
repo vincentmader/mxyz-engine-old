@@ -6,3 +6,8 @@
 
 [dependencies]
     # mxyz-utils = { path="../mxyz-utils" }
+    serde_json = "1.0"
+
+[dependencies.serde]
+    version = "1.0"
+    features = ["derive"]
