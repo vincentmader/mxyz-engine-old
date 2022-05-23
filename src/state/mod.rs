@@ -32,7 +32,6 @@ impl State {
             for (other_id, other) in current_state.systems.iter().enumerate() {
                 println!("    {} - {}", system_id, other_id);
                 let interactions = get_interactions(system_id, other_id, &config); // TODO clean up?
-
                 let self_interaction = system_id == other_id;
                 /// Applies interactions between systems (Pass to System)
                 let (ints, cfg) = (&interactions, &config);
