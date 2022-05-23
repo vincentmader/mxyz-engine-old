@@ -1,44 +1,48 @@
-#![allow(dead_code)]
-use super::integrator::Integrator;
+pub mod collision;
+pub mod composed;
+pub mod diffusion;
+pub mod force;
+pub mod game_of_life;
+pub mod ising;
+mod testing;
+use crate::integrator::Integrator;
+use crate::system::SystemVariant;
 
-#[derive(Debug)]
-pub enum Interaction {
-    Force(Force),
-
-    NewtonianGravity(Integrator),
-    Coulomb(Integrator),
-    LennardJones(Integrator),
-
-    Collision,
-    Cohesion,
-    Avoidance,
-    Alignment,
-    Diffusion,
-    GameOfLife,
+/// Interaction
+pub struct Interaction {
+    pub variant: InteractionVariant,
+    pub integrator: Integrator,
+    pub matrix: InteractionMatrix,
+    //  TODO specify neighborhood/tree calculation
 }
-
-#[derive(Debug)]
-pub struct Force {
-    variant: ForceVariant,
-    integrator: ForceIntegrator,
+/// Interaction Variant
+pub enum InteractionVariant {
+    Force(force::Force),
+    Collision(collision::Collision),
+    // Diffusion(diffusion::Diffusion),
+    // GameOfLife(game_of_life::GameOfLife),
+    // Ising(ising::Ising),
+    // Composed(Box<dyn InteractionTrait>),
 }
-
-#[derive(Debug)]
-pub enum ForceVariant {
-    NewtonianGravity,
-    Coulomb,
-    LennardJones,
+/// Interaction Matrix
+pub struct InteractionMatrix {
+    pub entries: Vec<Vec<Option<bool>>>,
 }
-
-#[derive(Debug)]
-pub enum ForceIntegrator {
-    EulerExplicit,
-    EulerImplicit,
-    RungeKutta1,
-    RungeKutta2,
-    RungeKutta4,
-    LeapFrog,
-    Verlet,
-    BulirschStoer,
-    // Symplectic,
+impl InteractionMatrix {
+    pub fn new() -> Self {
+        let entries = vec![];
+        InteractionMatrix { entries }
+    }
+    pub fn init(&mut self, systems: &Vec<SystemVariant>) {
+        for _ in 0..systems.len() {
+            let mut row = vec![];
+            for _ in 0..systems.len() {
+                row.push(None);
+            }
+            self.entries.push(row);
+        }
+    }
+    // TODO auto-add/rm rows/cells on system-add/rm
+    // TODO run tests for matrix on system-delete
+    // TODO run test for all sim_ids (initialization)
 }

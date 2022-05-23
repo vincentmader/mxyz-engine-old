@@ -8,7 +8,7 @@ pub struct Engine {
     pub states: Vec<State>,
 }
 impl Engine {
-    /// Creates a new Engine instance
+    /// Creates a new instance of Engine Structure
     pub fn new() -> Engine {
         let config = EngineConfig::new();
         let states = vec![];

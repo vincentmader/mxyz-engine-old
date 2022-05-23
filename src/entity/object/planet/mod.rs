@@ -1,13 +1,15 @@
 use super::PhysicalObject;
 use crate::attribute::*;
+use serde::{Deserialize, Serialize};
 
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct Planet {
-    position: [f64; 3],
-    velocity: [f64; 3],
-    mass: f64,
+    pub position: [f64; 3],
+    pub velocity: [f64; 3],
+    pub mass: f64,
 }
 impl PhysicalObject for Planet {}
+impl MassiveParticle for Planet {}
 impl Planet {
     pub fn new(mass: f64, position: [f64; 3], velocity: [f64; 3]) -> Self {
         Planet {

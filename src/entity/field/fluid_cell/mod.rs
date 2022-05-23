@@ -1,7 +1,8 @@
 use super::DiscreteFieldCell;
 use crate::attribute::*;
+use serde::{Deserialize, Serialize};
 
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct FluidCell {
     velocity: [f64; 3],
     density: f64,

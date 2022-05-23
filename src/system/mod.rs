@@ -1,9 +1,11 @@
 pub mod discrete_field;
 pub mod physical_objects;
+use discrete_field::DiscreteField;
+use physical_objects::PhysicalObjects;
 
 #[derive(Clone)]
-/// System Enumeration
-pub enum System {
-    DiscreteField(discrete_field::DiscreteField),
-    PhysicalObjects(physical_objects::PhysicalObjects),
+/// System Variant Enumeration
+pub enum SystemVariant {
+    DiscreteField(DiscreteField),
+    PhysicalObjects(PhysicalObjects),
 }

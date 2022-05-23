@@ -1,61 +1,65 @@
-use std::collections::HashMap;
-
-use crate::config::EngineConfig;
-use crate::config::SystemConfig;
+use crate::config::{EngineConfig, SystemConfig};
 use crate::entity;
-use crate::integrator::Integrator;
-use crate::interaction::Interaction;
-use crate::system;
-use crate::system::System;
+use crate::integrator::{Integrator, IntegratorVariant};
+use crate::interaction::{force, Interaction, InteractionMatrix, InteractionVariant};
+use crate::system::{self, SystemVariant};
+
+const NR_OF_STEPS: usize = 2221;
 
 pub enum SimulationId {
-    Foo,
+    ThreeBodyFigureEight,
 }
 
 /// Initialize State & Config
-pub fn initialize(sim_id: &Option<SimulationId>, config: &mut EngineConfig) -> Vec<System> {
+pub fn initialize(sim_id: &Option<SimulationId>, config: &mut EngineConfig) -> Vec<SystemVariant> {
     let mut systems = vec![];
     match sim_id {
         None => {}
         Some(id) => match id {
-            SimulationId::Foo => foo(&mut systems, config),
-            _ => todo!(),
+            SimulationId::ThreeBodyFigureEight => three_body_figure_eight(&mut systems, config),
         },
     }
     systems
 }
 
-pub fn foo(systems: &mut Vec<System>, config: &mut EngineConfig) {
-    // 0. SYSTEM
-    let _id = 0; // TODO save in system struct? sync with loop over state.systems?
-    let mut field = system::discrete_field::DiscreteField::new();
-    for _entity_idx in 0..2 {
-        let entity = entity::field::fluid_cell::FluidCell::new([0., 0., 0.], 0.);
-        field.entities.push(Box::new(entity));
-    }
-    systems.push(System::DiscreteField(field));
-    let sys_conf = SystemConfig::new();
-    config.systems.push(sys_conf);
+pub fn three_body_figure_eight(systems: &mut Vec<SystemVariant>, config: &mut EngineConfig) {
+    // SYSTEMS
+    // ========================================================================
+    config.step_id.1 = NR_OF_STEPS;
 
-    // 1. SYSTEM
-    let id = 1;
-    let mut field = system::physical_objects::PhysicalObjects::new();
+    // Objects
+    // ------------------------------------------------------------------------
+    let mut sys = system::physical_objects::PhysicalObjects::new();
+    let speed = 0.;
     for entity_id in 0..2 {
         let m = 1.;
-        let pos = [2. * entity_id as f64 - 1., 0., 0.];
-        let vel = [0., 0.005 * (2. * entity_id as f64 - 1.), 0.];
-        let entity = entity::object::planet::Planet::new(m, pos, vel);
-        field.entities.push(Box::new(entity));
+        let x = [2. * (entity_id as f64 - 0.5), 0., 0.];
+        let v = [0., speed * (2. * entity_id as f64 - 1.), 0.];
+        let entity = entity::object::planet::Planet::new(m, x, v);
+        sys.entities.push(Box::new(entity));
     }
-    systems.push(System::PhysicalObjects(field));
+    systems.push(SystemVariant::PhysicalObjects(sys));
     let sys_conf = SystemConfig::new();
     config.systems.push(sys_conf);
 
     // INTERACTIONS
-    // TODO
-    let interactions = HashMap::from([(
-        id,
-        vec![Interaction::NewtonianGravity(Integrator::EulerExplicit)],
-    )]);
-    config.interactions.insert(id, interactions);
+    // ========================================================================
+    let interactions = &mut config.interactions;
+
+    // Gravity
+    // ------------------------------------------------------------------------
+    let variant = force::ForceVariant::NewtonianGravity;
+    let force = force::Force { variant };
+    let variant = IntegratorVariant::EulerExplicit;
+    let integrator = Integrator { variant };
+    let variant = InteractionVariant::Force(force);
+    let mut matrix = InteractionMatrix::new();
+    matrix.init(&systems);
+    matrix.entries[0][0] = Some(true);
+    let interaction = Interaction {
+        integrator,
+        matrix,
+        variant,
+    };
+    interactions.push(interaction);
 }

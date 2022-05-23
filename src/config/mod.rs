@@ -22,7 +22,6 @@ impl EngineConfig {
 }
 
 // // TODO move else-where
-// // #[derive(Debug)]
 // pub struct InteractionMatrix {
 //     rows: Vec<InteractionMatrixRow>,
 // }
@@ -64,7 +63,6 @@ impl EngineConfig {
 //     }
 // }
 
-// // #[derive(Debug)]
 // pub struct InteractionMatrixRow {
 //     entries: Vec<Vec<Interaction>>,
 // }

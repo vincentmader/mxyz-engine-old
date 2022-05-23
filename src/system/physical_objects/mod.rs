@@ -1,5 +1,7 @@
+use crate::config::EngineConfig;
 use crate::entity::object::PhysicalObject;
 use crate::interaction::Interaction;
+use crate::interaction::InteractionVariant;
 use crate::system::discrete_field::DiscreteField;
 
 #[derive(Clone)]
@@ -12,55 +14,51 @@ impl PhysicalObjects {
         let entities = vec![];
         PhysicalObjects { entities }
     }
-    pub fn interact_with_discrete_field(
+    /// Object-Field Interaction
+    ///
+    /// Examples:
+    /// - charges accelerated by voltage
+    /// - object falling to the ground
+    /// - wall collisions
+    pub fn interact_with_field(
         &mut self,
-        field: &DiscreteField,
-        interaction: &Interaction,
+        _other: &DiscreteField,
+        interactions: &Vec<&Interaction>,
+        _config: &EngineConfig,
+        _self_interaction: bool,
     ) {
-        match interaction {
-            // e.g. wall collisions
-            Interaction::Collision => {}
-            // e.g. object falling to the ground
-            Interaction::NewtonianGravity(integrator) => {}
-            // e.g. charges accelerated by voltage
-            Interaction::Coulomb(integrator) => {}
-            _ => {}
+        for interaction in interactions.iter() {
+            match interaction.variant {
+                InteractionVariant::Force(_) => todo!(),
+                InteractionVariant::Collision(_) => todo!(),
+            }
         }
     }
-    pub fn interact_with_physical_objects(
+    /// Object-Object Interaction
+    ///
+    /// Examples:
+    /// - mutual gravitational attraction
+    /// - Coulomb & Lennard-Jones
+    /// - boid forces (avoidance, cohesion, alignment)
+    pub fn interact_with_objects(
         &mut self,
-        field: &PhysicalObjects,
-        interaction: &Interaction,
+        // others: &Vec<Box<dyn PhysicalObject>>,
+        other: &PhysicalObjects,
+        interactions: &Vec<&Interaction>,
+        _config: &EngineConfig,
+        self_interaction: bool,
     ) {
-        match interaction {
-            // e.g. Billard balls
-            Interaction::Collision => {}
-            // e.g. interaction of atoms
-            Interaction::LennardJones(integrator) => {}
-            // e.g. binary star
-            Interaction::NewtonianGravity(integrator) => {}
-            // e.g. proton-proton repulsion
-            Interaction::Coulomb(integrator) => {}
-            _ => {}
+        for interaction in interactions.iter() {
+            let entities = &mut self.entities; // TODO filter
+            let others = &other.entities;
+
+            let integrator = &interaction.integrator;
+            match &interaction.variant {
+                InteractionVariant::Collision(_) => todo!(),
+                InteractionVariant::Force(f) => {
+                    f.apply_to_objects_from_objects(entities, others, integrator, self_interaction)
+                }
+            }
         }
     }
 }
-
-// for (ent_id, entity_1) in sys_1.entities.iter_mut().enumerate()
-//                                                         {
-//                                                             let ent_id = (sys_id, ent_id);
-//                                                             for (ent_jd, entity_2) in sys_2.entities.iter().enumerate()
-//                                                             {
-//                                                                 let ent_jd = (sys_jd, ent_jd);
-//                                                                 match integrator {
-//                                                                     Integrator::EulerExplicit => {
-//                                                                         // euler_exp_gravity(
-//                                                                         //     (ent_id, entity_1),
-//                                                                         //     (ent_jd, entity_2),
-//                                                                         // );
-//                                                                     }
-//                                                                     _ => {}
-//                                                                 }
-//                                                             }
-//                                                         }
-//                                                         // e.g. planets influencing each other

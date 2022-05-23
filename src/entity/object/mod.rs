@@ -1,6 +1,5 @@
-use crate::attribute::*;
-
 pub mod planet;
+use crate::attribute::*;
 
 /// Entity Trait: Physical Object
 pub trait PhysicalObject: PhysicalObjectClone + Position + Velocity + Mass + Charge {}
