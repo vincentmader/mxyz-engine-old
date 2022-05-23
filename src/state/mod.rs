@@ -23,13 +23,14 @@ impl State {
     }
     /// Forwards State
     pub fn step(&mut self, config: &EngineConfig, states: &Vec<State>) {
-        println!("\n{}.", config.step_id.0);
+        println!("\n{}. ----------------------------------", config.step_id.0);
         /// Loads current State & creates neighborhoods
         let current_state = &states[config.step_id.0];
         let _neighborhoods = prepare_neighborhoods(); // TODO get relevant neighbors/nodes
         /// Loops over all pairs of systems & loads interactions for each pair
         for (system_id, system) in self.systems.iter_mut().enumerate() {
             for (other_id, other) in current_state.systems.iter().enumerate() {
+                println!("    {} - {}", system_id, other_id);
                 let interactions = get_interactions(system_id, other_id, &config); // TODO clean up?
 
                 let self_interaction = system_id == other_id;

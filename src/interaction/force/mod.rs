@@ -33,8 +33,6 @@ impl Force {
         integrator: &Integrator,
         self_interaction: bool,
     ) {
-        println!("\tforce!");
-
         let force_getter = match self.variant {
             ForceVariant::NewtonianGravity => force_newton,
             ForceVariant::Coulomb => force_coulomb,
@@ -48,14 +46,14 @@ impl Force {
         };
 
         for (entity_id, mut entity) in entities.iter_mut().enumerate() {
-            println!("\t{}", entity_id);
             for (other_id, other) in others.iter().enumerate() {
+                println!("\t{} - {}", entity_id, other_id);
                 if self_interaction {
                     if entity_id == other_id {
+                        println!("\t    skip");
                         continue;
                     }
                 }
-                println!("\t\t{}", other_id);
                 integrator(&mut entity, &other, force_getter);
             }
         }
@@ -73,7 +71,7 @@ pub enum ForceVariant {
 }
 
 fn force_coulomb(entity: &Box<dyn PhysicalObject>, other: &Box<dyn PhysicalObject>) -> [f64; 3] {
-    println!("\t\t\tCoulomb!");
+    println!("\t\tCOULOMB");
     let (q1, q2) = (entity.get_charge(), other.get_charge());
     let (y1, y2) = (entity.get_position(), other.get_position());
     let u: Vec<f64> = (0..3).map(|i| y2[i] - y1[i]).collect();
@@ -88,7 +86,7 @@ fn force_coulomb(entity: &Box<dyn PhysicalObject>, other: &Box<dyn PhysicalObjec
     force
 }
 fn force_newton(entity: &Box<dyn PhysicalObject>, other: &Box<dyn PhysicalObject>) -> [f64; 3] {
-    println!("\t\t\tNewton!");
+    println!("\t    NEWTON");
     let (m1, m2) = (entity.get_mass(), other.get_mass());
     let (y1, y2) = (entity.get_position(), other.get_position());
     let u: Vec<f64> = (0..3).map(|i| y2[i] - y1[i]).collect();
@@ -100,7 +98,6 @@ fn force_newton(entity: &Box<dyn PhysicalObject>, other: &Box<dyn PhysicalObject
     const G: f64 = 1.; // TODO
     let force = G * (m1 * m2) / (r * r);
     let force: Vec<f64> = (0..3).map(|i| u[i] * force).collect();
-    println!("{:?}", force);
     let force = [force[0], force[1], force[2]];
     force
 }
@@ -108,7 +105,7 @@ fn force_lennard_jones(
     entity: &Box<dyn PhysicalObject>,
     other: &Box<dyn PhysicalObject>,
 ) -> [f64; 3] {
-    println!("\t\t\tLennard-Jones!");
+    println!("\t    LENNARD-JONES");
     let (y1, y2) = (entity.get_position(), other.get_position());
     let u: Vec<f64> = (0..3).map(|i| y2[i] - y1[i]).collect();
     let r = u.iter().map(|i| i * i).sum::<f64>().powf(0.5);
@@ -123,7 +120,7 @@ fn force_lennard_jones(
     force
 }
 fn force_hooke(entity: &Box<dyn PhysicalObject>, other: &Box<dyn PhysicalObject>) -> [f64; 3] {
-    println!("\t\t\tHooke!");
+    println!("\t    HOOKE");
     let (y1, y2) = (entity.get_position(), other.get_position());
     let u: Vec<f64> = (0..3).map(|i| y2[i] - y1[i]).collect();
     let r = u.iter().map(|i| i * i).sum::<f64>().powf(0.5);
