@@ -1,14 +1,14 @@
 use crate::config::EngineConfig;
-use crate::integrator::Integrator;
+use crate::interaction::Interaction;
 
-pub fn get_integrators(sys_id: usize, sys_jd: usize, config: &EngineConfig) -> Vec<&Integrator> {
+pub fn get_interactions(sys_id: usize, sys_jd: usize, config: &EngineConfig) -> Vec<&Interaction> {
     config
-        .integrators
+        .interactions
         .iter()
         .filter(|i| a(i, sys_id, sys_jd))
         .collect()
 }
-fn a(i: &Integrator, sys_id: usize, sys_jd: usize) -> bool {
+fn a(i: &Interaction, sys_id: usize, sys_jd: usize) -> bool {
     match i.matrix.entries[sys_id][sys_jd] {
         Some(e) => e,  // filter out all entries set to `false`
         None => false, // also disregard interaction-matrix entries set to `None`

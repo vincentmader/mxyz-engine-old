@@ -6,57 +6,57 @@ pub struct Force {
     pub variant: ForceVariant,
 }
 impl Force {
-    // pub fn _apply_to_field_from_field(
-    //     &self,
-    //     _entities: &mut Vec<Box<dyn DiscreteFieldCell>>,
-    //     _others: &Vec<Box<dyn DiscreteFieldCell>>,
-    // ) {
-    // }
-    // pub fn _apply_to_field_from_objects(
-    //     &self,
-    //     _entities: &mut Vec<Box<dyn DiscreteFieldCell>>,
-    //     _others: &Vec<Box<dyn PhysicalObject>>,
-    // ) {
-    // }
-    // pub fn _apply_to_objects_from_field(
-    //     &self,
-    //     _entities: &mut Vec<Box<dyn PhysicalObject>>,
-    //     _others: &Vec<Box<dyn DiscreteFieldCell>>,
-    // ) {
-    // }
-    // pub fn apply_to_objects_from_objects(
-    //     &self,
-    //     entities: &mut Vec<Box<dyn PhysicalObject>>,
-    //     others: &Vec<Box<dyn PhysicalObject>>,
-    //     integrator: &Integrator,
-    //     self_interaction: bool,
-    // ) {
-    //     let force_getter = match self.variant {
-    //         ForceVariant::NewtonianGravity => force_newton,
-    //         ForceVariant::Coulomb => force_coulomb,
-    //         ForceVariant::Hooke => force_hooke,
-    //         ForceVariant::LennardJones => force_lennard_jones,
-    //     };
+    pub fn _apply_to_field_from_field(
+        &self,
+        _entities: &mut Vec<Box<dyn DiscreteFieldCell>>,
+        _others: &Vec<Box<dyn DiscreteFieldCell>>,
+    ) {
+    }
+    pub fn _apply_to_field_from_objects(
+        &self,
+        _entities: &mut Vec<Box<dyn DiscreteFieldCell>>,
+        _others: &Vec<Box<dyn PhysicalObject>>,
+    ) {
+    }
+    pub fn _apply_to_objects_from_field(
+        &self,
+        _entities: &mut Vec<Box<dyn PhysicalObject>>,
+        _others: &Vec<Box<dyn DiscreteFieldCell>>,
+    ) {
+    }
+    pub fn apply_to_objects_from_objects(
+        &self,
+        entities: &mut Vec<Box<dyn PhysicalObject>>,
+        others: &Vec<Box<dyn PhysicalObject>>,
+        integrator: &Integrator,
+        self_interaction: bool,
+    ) {
+        let force_getter = match self.variant {
+            ForceVariant::NewtonianGravity => force_newton,
+            ForceVariant::Coulomb => force_coulomb,
+            ForceVariant::Hooke => force_hooke,
+            ForceVariant::LennardJones => force_lennard_jones,
+        };
 
-    //     let integrator = match integrator.variant {
-    //         IntegratorVariant::EulerExplicit => integrator::euler_explicit,
-    //         IntegratorVariant::RungeKutta4 => integrator::runge_kutta_4,
-    //         IntegratorVariant::Verlet => integrator::verlet,
-    //     };
+        let integrator = match integrator.variant {
+            IntegratorVariant::EulerExplicit => integrator::euler_explicit,
+            IntegratorVariant::RungeKutta4 => integrator::runge_kutta_4,
+            IntegratorVariant::Verlet => integrator::verlet,
+        };
 
-    //     for (entity_id, mut entity) in entities.iter_mut().enumerate() {
-    //         for (other_id, other) in others.iter().enumerate() {
-    //             println!("\t{} - {}", entity_id, other_id);
-    //             if self_interaction {
-    //                 if entity_id == other_id {
-    //                     println!("\t    skip");
-    //                     continue;
-    //                 }
-    //             }
-    //             integrator(&mut entity, &other, force_getter);
-    //         }
-    //     }
-    // }
+        for (entity_id, mut entity) in entities.iter_mut().enumerate() {
+            for (other_id, other) in others.iter().enumerate() {
+                println!("\t{} - {}", entity_id, other_id);
+                if self_interaction {
+                    if entity_id == other_id {
+                        println!("\t    skip");
+                        continue;
+                    }
+                }
+                integrator(&mut entity, &other, force_getter);
+            }
+        }
+    }
 }
 
 pub enum ForceVariant {

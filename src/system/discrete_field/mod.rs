@@ -1,7 +1,7 @@
 use crate::config::EngineConfig;
 use crate::entity::field::DiscreteFieldCell;
-use crate::integrator::Integrator;
-use crate::integrator::IntegratorVariant;
+use crate::interaction::Interaction;
+use crate::interaction::InteractionVariant;
 use crate::system::physical_objects::PhysicalObjects;
 
 #[derive(Clone)]
@@ -23,15 +23,14 @@ impl DiscreteField {
     pub fn interact_with_field(
         &mut self,
         _other: &DiscreteField,
-        integrators: &Vec<&Integrator>,
+        interactions: &Vec<&Interaction>,
         _config: &EngineConfig,
         _self_interaction: bool,
     ) {
-        for integrator in integrators.iter() {
-            match &integrator.variant {
-                // InteractionVariant::Force(_) => todo!(),
-                // InteractionVariant::Collision(_) => todo!(),
-                _ => todo!(),
+        for interaction in interactions.iter() {
+            match &interaction.variant {
+                InteractionVariant::Force(_) => todo!(),
+                InteractionVariant::Collision(_) => todo!(),
             }
         }
     }
@@ -44,15 +43,14 @@ impl DiscreteField {
     pub fn interact_with_objects(
         &mut self,
         _other: &PhysicalObjects,
-        integrators: &Vec<&Integrator>,
+        interactions: &Vec<&Interaction>,
         _config: &EngineConfig,
         _self_interaction: bool,
     ) {
-        for integrator in integrators.iter() {
-            match integrator.variant {
-                // InteractionVariant::Force(_) => todo!(),
-                // InteractionVariant::Collision(_) => todo!(),
-                _ => todo!(),
+        for interaction in interactions.iter() {
+            match interaction.variant {
+                InteractionVariant::Force(_) => todo!(),
+                InteractionVariant::Collision(_) => todo!(),
             }
         }
     }

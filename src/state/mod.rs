@@ -3,7 +3,7 @@ pub mod tmp;
 use super::config::EngineConfig;
 use super::system::SystemVariant::{self, DiscreteField, PhysicalObjects};
 use preset::SimulationId;
-use tmp::{get_integrators, prepare_neighborhoods};
+use tmp::{get_interactions, prepare_neighborhoods};
 
 /// State
 #[derive(Clone)]
@@ -31,10 +31,10 @@ impl State {
         for (system_id, system) in self.systems.iter_mut().enumerate() {
             for (other_id, other) in current_state.systems.iter().enumerate() {
                 println!("    {} - {}", system_id, other_id);
-                let integrators = get_integrators(system_id, other_id, &config); // TODO clean up?
+                let interactions = get_interactions(system_id, other_id, &config); // TODO clean up?
                 let self_interaction = system_id == other_id;
                 /// Applies interactions between systems (Pass to System)
-                let (ints, cfg) = (&integrators, &config);
+                let (ints, cfg) = (&interactions, &config);
                 match system {
                     DiscreteField(system) => match other {
                         DiscreteField(other) => {

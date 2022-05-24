@@ -1,9 +1,7 @@
 use crate::config::{EngineConfig, SystemConfig};
 use crate::entity;
 use crate::integrator::{Integrator, IntegratorVariant};
-use crate::interaction::{
-    force, interaction_matrix::InteractionMatrix, Interaction, InteractionVariant,
-};
+use crate::interaction::{force, Interaction, InteractionMatrix, InteractionVariant};
 use crate::system::{self, SystemVariant};
 
 const NR_OF_STEPS: usize = 2221;
@@ -46,24 +44,22 @@ pub fn three_body_figure_eight(systems: &mut Vec<SystemVariant>, config: &mut En
 
     // INTERACTIONS
     // ========================================================================
-    let integrators = &mut config.integrators;
+    let interactions = &mut config.interactions;
 
+    // Gravity
+    // ------------------------------------------------------------------------
+    let variant = force::ForceVariant::NewtonianGravity;
+    let force = force::Force { variant };
+    let variant = IntegratorVariant::EulerExplicit;
+    let integrator = Integrator { variant };
+    let variant = InteractionVariant::Force(force);
     let mut matrix = InteractionMatrix::new();
     matrix.init(&systems);
     matrix.entries[0][0] = Some(true);
-    let mut interactions = vec![];
-
-    let variant = force::ForceVariant::NewtonianGravity;
-    let force = force::Force { variant };
-    let variant = InteractionVariant::Force(force);
-    let interaction = Interaction { variant };
-    interactions.push(interaction);
-
-    let variant = IntegratorVariant::EulerExplicit;
-    let integrator = Integrator {
+    let interaction = Interaction {
+        integrator,
         matrix,
         variant,
-        interactions,
     };
-    integrators.push(integrator);
+    interactions.push(interaction);
 }
