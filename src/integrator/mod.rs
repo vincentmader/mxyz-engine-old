@@ -13,7 +13,8 @@ pub enum IntegratorVariant {
     // RungeKutta2,
     RungeKutta4,
     // RungeKuttaN,
-    // Verlet,
+    // VelocityVerlet,
+    Verlet,
     // LeapFrog,
     // BulirschStoer,
     // Collision,
@@ -39,6 +40,13 @@ pub fn euler_explicit(
 }
 
 pub fn runge_kutta_4(
+    _entity: &mut Box<dyn PhysicalObject>,
+    _other: &Box<dyn PhysicalObject>,
+    _force_getter: fn(&Box<dyn PhysicalObject>, &Box<dyn PhysicalObject>) -> [f64; 3],
+) {
+}
+
+pub fn verlet(
     _entity: &mut Box<dyn PhysicalObject>,
     _other: &Box<dyn PhysicalObject>,
     _force_getter: fn(&Box<dyn PhysicalObject>, &Box<dyn PhysicalObject>) -> [f64; 3],

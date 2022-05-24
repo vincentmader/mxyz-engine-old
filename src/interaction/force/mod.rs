@@ -1,8 +1,6 @@
 use crate::entity::field::DiscreteFieldCell;
 use crate::entity::object::PhysicalObject;
-use crate::integrator::Integrator;
-use crate::integrator::IntegratorVariant;
-use crate::integrator::{euler_explicit, runge_kutta_4};
+use crate::integrator::{self, Integrator, IntegratorVariant};
 
 pub struct Force {
     pub variant: ForceVariant,
@@ -41,8 +39,9 @@ impl Force {
         };
 
         let integrator = match integrator.variant {
-            IntegratorVariant::EulerExplicit => euler_explicit,
-            IntegratorVariant::RungeKutta4 => runge_kutta_4,
+            IntegratorVariant::EulerExplicit => integrator::euler_explicit,
+            IntegratorVariant::RungeKutta4 => integrator::runge_kutta_4,
+            IntegratorVariant::Verlet => integrator::verlet,
         };
 
         for (entity_id, mut entity) in entities.iter_mut().enumerate() {

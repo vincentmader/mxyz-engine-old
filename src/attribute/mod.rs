@@ -32,7 +32,7 @@ pub trait Force {
 /// Mass
 pub trait Mass {
     fn get_mass(&self) -> f64 {
-        0.
+        1. // TODO what value? 1 or 0?
     }
     fn set_mass(&mut self, _mass: f64) {}
 }

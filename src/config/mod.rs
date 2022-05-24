@@ -6,6 +6,7 @@ pub struct EngineConfig {
     pub step_id: (usize, usize),
     pub systems: Vec<SystemConfig>,
     pub interactions: Vec<Interaction>,
+    // pub constants:
 }
 impl EngineConfig {
     pub fn new() -> Self {
