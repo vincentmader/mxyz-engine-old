@@ -1,9 +1,16 @@
-// use crate::entity::field::DiscreteFieldCell;
-use crate::entity::object::PhysicalObject;
+// use super::entity::field::DiscreteFieldCell;
+use super::entity::object::PhysicalObject;
+use super::interaction::{interaction_matrix::InteractionMatrix, Interaction};
+// use super::system::discrete_field::DiscreteField;
+// use super::system::physical_objects::PhysicalObjects;
 
 pub struct Integrator {
     pub variant: IntegratorVariant,
 }
+// impl Integrator {
+//     pub fn step_objects(&self, system: &mut PhysicalObjects) {}
+//     pub fn step_field(&self, system: &mut DiscreteField) {}
+// }
 
 #[derive(PartialEq)]
 /// Entity Integrator
