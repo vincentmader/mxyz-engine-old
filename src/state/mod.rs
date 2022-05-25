@@ -23,42 +23,13 @@ impl State {
     }
     /// Forwards State
     pub fn step(&mut self, config: &EngineConfig, states: &Vec<State>) {
-        println!("\n{}. ----------------------------------", config.step_id.0);
-        /// Loads current State
-        let current_state = &states[config.step_id.0];
+        // println!("\n{}. ----------------------------------", config.step_id.0);
         /// Creates "neighborhoods"
         let _neighborhoods = tmp::prepare_neighborhoods(); // TODO get relevant neighbors/nodes
         /// Loops over all pairs of systems
-        for (system_id, _system) in self.systems.iter_mut().enumerate() {
-            for (other_id, _other) in current_state.systems.iter().enumerate() {
-                println!("    {} - {}", system_id, other_id);
-                /// Loads interactions for each pair
-                let interactions = tmp::get_interactions(system_id, other_id, &config); // TODO clean up?
-                let _self_interaction = system_id == other_id;
-                /// Applies interactions between systems (Pass to System)
-                let (_ints, _cfg) = (&interactions, &config);
-
-                for interaction in interactions {
-                    let matrix = &interaction.matrix;
-                    let _integrator = &matrix.rows[system_id].entries[other_id].integrator;
-
-                    // integrator.step(system, other, interaction)
-                }
-                // match system {
-                //     DiscreteField(system) => match other {
-                //         DiscreteField(other) => system.step(),
-                //         PhysicalObjects(other) => system.step(),
-                //     },
-                //     PhysicalObjects(system) => match other {
-                //         DiscreteField(other) => system.step(interactions),
-                //         PhysicalObjects(other) => system.step(interactions),
-                //     },
-                // }
-                // system.interact_with_field(&other, ints, cfg, self_interaction);
-                // system.interact_with_objects(&other, ints, cfg, self_interaction);
-                // system.interact_with_field(&other, ints, cfg, self_interaction);
-                // system.interact_with_objects(&other, ints, cfg, self_interaction);
-            }
+        for (system_id, system) in self.systems.iter_mut().enumerate() {
+            system.id = system_id; // TODO comment: why?
+            system.step(&config, &states);
         }
     }
 }

@@ -1,7 +1,6 @@
-// use crate::entity::field::DiscreteFieldCell;
-// use super::entity::object::PhysicalObject;
 use super::entity::Entity as PhysicalObject;
 use super::interaction::Interaction;
+use crate::system::System;
 
 pub struct Integrator {
     pub variant: IntegratorVariant,
@@ -16,7 +15,15 @@ impl Integrator {
             interactions,
         }
     }
-    // pub fn step()
+    pub fn step(&self, system: &mut System, other: &System, interaction: &Interaction) {
+        match self.variant {
+            IntegratorVariant::EulerExplicit => {}
+            _ => {}
+        }
+        for entity in system.entities.iter_mut() {
+            for other in other.entities.iter() {}
+        }
+    }
 }
 
 // #[derive(PartialEq)]
