@@ -1,7 +1,7 @@
 use crate::entity::Entity as PhysicalObject;
 // use crate::entity::field::DiscreteFieldCell;
 // use crate::entity::object::PhysicalObject;
-use crate::integrator::{self, Integrator, IntegratorVariant};
+// use crate::integrator::{self, Integrator, IntegratorVariant};
 
 pub struct Force {
     pub variant: ForceVariant,
@@ -75,7 +75,7 @@ pub enum ForceVariant {
     Alignment,
 }
 
-fn force_coulomb(entity: &Box<dyn PhysicalObject>, other: &Box<dyn PhysicalObject>) -> [f64; 3] {
+fn _force_coulomb(entity: &Box<dyn PhysicalObject>, other: &Box<dyn PhysicalObject>) -> [f64; 3] {
     println!("\t\tCOULOMB");
     let (q1, q2) = (entity.get_charge(), other.get_charge());
     let (y1, y2) = (entity.get_position(), other.get_position());
@@ -90,7 +90,7 @@ fn force_coulomb(entity: &Box<dyn PhysicalObject>, other: &Box<dyn PhysicalObjec
     let force = [force[0], force[1], force[2]];
     force
 }
-fn force_newton(entity: &Box<dyn PhysicalObject>, other: &Box<dyn PhysicalObject>) -> [f64; 3] {
+fn _force_newton(entity: &Box<dyn PhysicalObject>, other: &Box<dyn PhysicalObject>) -> [f64; 3] {
     println!("\t    NEWTON");
     let (m1, m2) = (entity.get_mass(), other.get_mass());
     let (y1, y2) = (entity.get_position(), other.get_position());
@@ -106,7 +106,7 @@ fn force_newton(entity: &Box<dyn PhysicalObject>, other: &Box<dyn PhysicalObject
     let force = [force[0], force[1], force[2]];
     force
 }
-fn force_lennard_jones(
+fn _force_lennard_jones(
     entity: &Box<dyn PhysicalObject>,
     other: &Box<dyn PhysicalObject>,
 ) -> [f64; 3] {
@@ -124,7 +124,7 @@ fn force_lennard_jones(
     let force = [force[0], force[1], force[2]];
     force
 }
-fn force_hooke(entity: &Box<dyn PhysicalObject>, other: &Box<dyn PhysicalObject>) -> [f64; 3] {
+fn _force_hooke(entity: &Box<dyn PhysicalObject>, other: &Box<dyn PhysicalObject>) -> [f64; 3] {
     println!("\t    HOOKE");
     let (y1, y2) = (entity.get_position(), other.get_position());
     let u: Vec<f64> = (0..3).map(|i| y2[i] - y1[i]).collect();

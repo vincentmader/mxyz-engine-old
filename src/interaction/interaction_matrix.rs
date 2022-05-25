@@ -1,4 +1,4 @@
-use crate::integrator::{Integrator, IntegratorVariant};
+use crate::integrator::Integrator;
 use crate::system::System;
 
 // TODO move elsewhere

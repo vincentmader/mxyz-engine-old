@@ -1,5 +1,5 @@
 use crate::attribute::*;
-use crate::entity::object::PhysicalObject;
+// use crate::entity::object::PhysicalObject;
 use crate::entity::Entity;
 use serde::{Deserialize, Serialize};
 

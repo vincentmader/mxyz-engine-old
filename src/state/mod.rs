@@ -2,7 +2,6 @@ pub mod preset;
 pub mod tmp;
 use super::config::EngineConfig;
 use super::system::System;
-use super::system::SystemVariant;
 use preset::SimulationId;
 
 /// State
@@ -30,18 +29,18 @@ impl State {
         /// Creates "neighborhoods"
         let _neighborhoods = tmp::prepare_neighborhoods(); // TODO get relevant neighbors/nodes
         /// Loops over all pairs of systems
-        for (system_id, system) in self.systems.iter_mut().enumerate() {
-            for (other_id, other) in current_state.systems.iter().enumerate() {
+        for (system_id, _system) in self.systems.iter_mut().enumerate() {
+            for (other_id, _other) in current_state.systems.iter().enumerate() {
                 println!("    {} - {}", system_id, other_id);
                 /// Loads interactions for each pair
                 let interactions = tmp::get_interactions(system_id, other_id, &config); // TODO clean up?
-                let self_interaction = system_id == other_id;
+                let _self_interaction = system_id == other_id;
                 /// Applies interactions between systems (Pass to System)
-                let (ints, cfg) = (&interactions, &config);
+                let (_ints, _cfg) = (&interactions, &config);
 
                 for interaction in interactions {
                     let matrix = &interaction.matrix;
-                    let integrator = &matrix.rows[system_id].entries[other_id].integrator;
+                    let _integrator = &matrix.rows[system_id].entries[other_id].integrator;
 
                     // integrator.step(system, other, interaction)
                 }

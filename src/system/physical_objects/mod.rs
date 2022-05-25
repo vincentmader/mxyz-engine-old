@@ -16,7 +16,7 @@ impl PhysicalObjects {
         PhysicalObjects { entities }
     }
     pub fn step(&mut self, interactions: Vec<&Interaction>) {
-        for interaction in interactions.iter() {}
+        for _interaction in interactions.iter() {}
     }
     ///// Object-Field Interaction
     /////

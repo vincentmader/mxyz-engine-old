@@ -25,12 +25,12 @@ impl EngineConfig {
 }
 
 pub struct Constants {
-    _G: f64,
+    _g: f64, // Newton's gravitational constant
 }
 impl Constants {
     pub fn new() -> Self {
-        let G = 1.;
-        Constants { _G: G }
+        let g = 1.;
+        Constants { _g: g }
     }
 }
 

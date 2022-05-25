@@ -1,5 +1,5 @@
 use crate::config::EngineConfig;
-use crate::integrator::Integrator;
+// use crate::integrator::Integrator;
 use crate::interaction::Interaction;
 
 pub fn get_interactions(sys_id: usize, sys_jd: usize, config: &EngineConfig) -> Vec<&Interaction> {
