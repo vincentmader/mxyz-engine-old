@@ -1,5 +1,6 @@
 // use crate::config::EngineConfig;
-use crate::entity::object::PhysicalObject;
+// use crate::entity::object::PhysicalObject;
+use crate::entity::Entity as PhysicalObject;
 use crate::interaction::Interaction;
 // use crate::interaction::InteractionVariant;
 // use crate::system::discrete_field::DiscreteField;

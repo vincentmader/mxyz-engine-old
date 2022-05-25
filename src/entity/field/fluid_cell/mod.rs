@@ -1,5 +1,5 @@
-use super::DiscreteFieldCell;
 use crate::attribute::*;
+use crate::entity::Entity;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -7,7 +7,11 @@ pub struct FluidCell {
     velocity: [f64; 3],
     density: f64,
 }
-impl DiscreteFieldCell for FluidCell {}
+impl Entity for FluidCell {}
+impl Force for FluidCell {}
+impl Position for FluidCell {}
+impl Charge for FluidCell {}
+impl Mass for FluidCell {}
 impl FluidCell {
     pub fn new(velocity: [f64; 3], density: f64) -> Self {
         FluidCell { velocity, density }
@@ -29,4 +33,3 @@ impl Density for FluidCell {
         self.density = density;
     }
 }
-impl Force for FluidCell {}

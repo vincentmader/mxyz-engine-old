@@ -1,5 +1,6 @@
 use crate::config::EngineConfig;
-use crate::entity::field::DiscreteFieldCell;
+// use crate::entity::field::DiscreteFieldCell;
+use crate::entity::Entity as DiscreteFieldCell;
 use crate::interaction::Interaction;
 use crate::interaction::InteractionVariant;
 use crate::system::physical_objects::PhysicalObjects;

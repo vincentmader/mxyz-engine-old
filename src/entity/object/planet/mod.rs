@@ -1,5 +1,6 @@
-use super::PhysicalObject;
 use crate::attribute::*;
+use crate::entity::object::PhysicalObject;
+use crate::entity::Entity;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -8,8 +9,8 @@ pub struct Planet {
     pub velocity: [f64; 3],
     pub mass: f64,
 }
-impl PhysicalObject for Planet {}
-impl MassiveParticle for Planet {}
+impl Entity for Planet {}
+// impl MassiveParticle for Planet {}
 impl Planet {
     pub fn new(mass: f64, position: [f64; 3], velocity: [f64; 3]) -> Self {
         Planet {
@@ -44,3 +45,5 @@ impl Velocity for Planet {
     }
 }
 impl Charge for Planet {}
+impl Force for Planet {}
+impl Density for Planet {}

@@ -2,7 +2,8 @@ use crate::config::{EngineConfig, SystemConfig};
 use crate::entity;
 use crate::integrator::{Integrator, IntegratorVariant};
 use crate::interaction::force::{Force, ForceVariant};
-use crate::interaction::interaction_matrix::InteractionMatrix;
+// use crate::interaction::interaction_matrix::InteractionMatrix;
+use crate::entity::Entity as DiscreteFieldCell;
 use crate::interaction::{Interaction, InteractionVariant};
 use crate::system::{self, SystemVariant};
 

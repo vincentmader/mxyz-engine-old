@@ -1,5 +1,6 @@
 // use crate::entity::field::DiscreteFieldCell;
-use super::entity::object::PhysicalObject;
+// use super::entity::object::PhysicalObject;
+use super::entity::Entity as PhysicalObject;
 use super::interaction::Interaction;
 
 pub struct Integrator {
