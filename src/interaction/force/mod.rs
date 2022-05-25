@@ -6,6 +6,9 @@ pub struct Force {
     pub variant: ForceVariant,
 }
 impl Force {
+    pub fn new(variant: ForceVariant) -> Self {
+        Force { variant }
+    }
     pub fn _apply_to_field_from_field(
         &self,
         _entities: &mut Vec<Box<dyn DiscreteFieldCell>>,
@@ -36,12 +39,14 @@ impl Force {
             ForceVariant::Coulomb => force_coulomb,
             ForceVariant::Hooke => force_hooke,
             ForceVariant::LennardJones => force_lennard_jones,
+            _ => todo!(),
         };
 
         let integrator = match integrator.variant {
             IntegratorVariant::EulerExplicit => integrator::euler_explicit,
             IntegratorVariant::RungeKutta4 => integrator::runge_kutta_4,
             IntegratorVariant::Verlet => integrator::verlet,
+            _ => todo!(),
         };
 
         for (entity_id, mut entity) in entities.iter_mut().enumerate() {
@@ -64,9 +69,9 @@ pub enum ForceVariant {
     NewtonianGravity,
     LennardJones,
     Hooke,
-    // Cohesion,
-    // Avoidance,
-    // Alignment,
+    Cohesion,
+    Avoidance,
+    Alignment,
 }
 
 fn force_coulomb(entity: &Box<dyn PhysicalObject>, other: &Box<dyn PhysicalObject>) -> [f64; 3] {

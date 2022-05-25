@@ -5,21 +5,22 @@ pub struct Integrator {
     pub variant: IntegratorVariant,
 }
 
-#[derive(PartialEq)]
+// #[derive(PartialEq)]
+#[derive(Debug)]
 /// Entity Integrator
 pub enum IntegratorVariant {
     EulerExplicit,
-    // EulerImplicit,
-    // RungeKutta2,
+    EulerImplicit,
+    RungeKutta2,
     RungeKutta4,
-    // RungeKuttaN,
-    // VelocityVerlet,
+    RungeKuttaN,
+    VelocityVerlet,
     Verlet,
-    // LeapFrog,
-    // BulirschStoer,
-    // Collision,
-    // CellularAutomaton,
-    // MonteCarlo,
+    LeapFrog,
+    BulirschStoer,
+    Collision,
+    CellularAutomaton,
+    MonteCarlo,
 }
 
 pub fn euler_explicit(

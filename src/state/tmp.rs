@@ -5,15 +5,57 @@ pub fn get_interactions(sys_id: usize, sys_jd: usize, config: &EngineConfig) -> 
     config
         .interactions
         .iter()
-        .filter(|i| a(i, sys_id, sys_jd))
+        .filter(|interaction| {
+            match interaction
+                .matrix
+                .rows
+                .get(sys_id)
+                .expect(&format!(
+                    "System-ID \"{}\" not found in interaction matrix",
+                    sys_id
+                ))
+                .entries
+                .get(sys_jd)
+                .expect(&format!(
+                    "System-JD \"{}\" not found in interaction matrix",
+                    sys_jd
+                ))
+                .active
+            {
+                Some(active) => active, // filter out all entries set to `false`
+                None => false,          // also disregard entries set to `None`
+            }
+        })
         .collect()
 }
-fn a(i: &Interaction, sys_id: usize, sys_jd: usize) -> bool {
-    match i.matrix.entries[sys_id][sys_jd] {
-        Some(e) => e,  // filter out all entries set to `false`
-        None => false, // also disregard interaction-matrix entries set to `None`
-    }
-}
+
+// pub fn get_integrator(sys_id: usize, sys_jd: usize, config: &EngineConfig) -> &Integrator {
+//     config
+//         .interactions
+//         .iter()
+//         .filter(|interaction| {
+//             match interaction
+//                 .matrix
+//                 .rows
+//                 .get(sys_id)
+//                 .expect(&format!(
+//                     "System-ID \"{}\" not found in interaction matrix",
+//                     sys_id
+//                 ))
+//                 .entries
+//                 .get(sys_jd)
+//                 .expect(&format!(
+//                     "System-JD \"{}\" not found in interaction matrix",
+//                     sys_jd
+//                 ))
+//                 .active
+//             {
+//                 Some(active) => active, // filter out all entries set to `false`
+//                 None => false,          // also disregard entries set to `None`
+//             }
+//         })
+//         .collect()
+// }
 
 pub fn prepare_neighborhoods() -> Vec<fn() -> Vec<usize>> {
     // TODO create neighborhoods
