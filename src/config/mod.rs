@@ -6,19 +6,31 @@ pub struct EngineConfig {
     pub step_id: (usize, usize),
     pub systems: Vec<SystemConfig>,
     pub interactions: Vec<Interaction>,
-    // pub constants:
+    pub constants: Constants,
 }
 impl EngineConfig {
     pub fn new() -> Self {
         let systems = vec![];
         let interactions = vec![];
         let step_id = (0, usize::MAX);
+        let constants = Constants::new();
 
         EngineConfig {
             systems,
             interactions,
             step_id,
+            constants,
         }
+    }
+}
+
+pub struct Constants {
+    _G: f64,
+}
+impl Constants {
+    pub fn new() -> Self {
+        let G = 1.;
+        Constants { _G: G }
     }
 }
 

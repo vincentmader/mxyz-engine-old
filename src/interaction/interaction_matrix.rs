@@ -40,13 +40,11 @@ impl InteractionMatrixRow {
 
 pub struct InteractionMatrixEntry {
     pub active: Option<bool>,
-    // pub integrators: Vec<Integrator>,
-    pub integrator: Option<IntegratorVariant>,
+    pub integrator: Option<Integrator>,
 }
 impl InteractionMatrixEntry {
     pub fn new() -> Self {
         let active = None;
-        // let integrators = vec![];
         let integrator = None;
         InteractionMatrixEntry { active, integrator }
     }

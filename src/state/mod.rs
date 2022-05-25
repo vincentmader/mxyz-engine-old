@@ -27,14 +27,22 @@ impl State {
         let current_state = &states[config.step_id.0];
         /// Creates "neighborhoods"
         let _neighborhoods = tmp::prepare_neighborhoods(); // TODO get relevant neighbors/nodes
-        /// Loops over all pairs of systems & loads interactions for each pair
+        /// Loops over all pairs of systems
         for (system_id, system) in self.systems.iter_mut().enumerate() {
             for (other_id, other) in current_state.systems.iter().enumerate() {
                 println!("    {} - {}", system_id, other_id);
+                /// Loads interactions for each pair
                 let interactions = tmp::get_interactions(system_id, other_id, &config); // TODO clean up?
                 let self_interaction = system_id == other_id;
                 /// Applies interactions between systems (Pass to System)
                 let (ints, cfg) = (&interactions, &config);
+
+                for interaction in interactions {
+                    let matrix = &interaction.matrix;
+                    let integrator = &matrix.rows[system_id].entries[other_id].integrator;
+
+                    // integrator.step(system, other, interaction)
+                }
                 // match system {
                 //     DiscreteField(system) => match other {
                 //         DiscreteField(other) => system.step(),

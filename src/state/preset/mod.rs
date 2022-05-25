@@ -66,19 +66,16 @@ pub fn three_body_figure_eight(systems: &mut Vec<SystemVariant>, config: &mut En
     // 1. Interaction Variant
     let force = Force::new(ForceVariant::NewtonianGravity);
     let interaction_variant = InteractionVariant::Force(force);
-    // 2. Matrix Init
-    let mut matrix = InteractionMatrix::new();
-    matrix.init(&systems);
+    // 2. Interaction Init
+    let mut interaction = Interaction::new(interaction_variant);
+    interaction.matrix.init(&systems);
     // 3. Matrix Integrator Init
     let integrator_variant = IntegratorVariant::EulerExplicit;
-    matrix.rows[0].entries[0].integrator = Some(integrator_variant);
+    let integrator = Integrator::new(integrator_variant);
+    interaction.matrix.rows[0].entries[0].integrator = Some(integrator);
     let integrator_variant = IntegratorVariant::RungeKutta4;
-    matrix.rows[1].entries[1].integrator = Some(integrator_variant);
+    let integrator = Integrator::new(integrator_variant);
+    interaction.matrix.rows[1].entries[1].integrator = Some(integrator);
     // 4. Push Interaction
-    let interaction = Interaction {
-        variant: interaction_variant,
-        // active: true,
-        matrix,
-    };
     interactions.push(interaction);
 }

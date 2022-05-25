@@ -23,7 +23,11 @@ pub fn print_interaction_matrix(engine: &mxyz_engine::Engine) {
         for (sys_id, row) in matrix.rows.iter().enumerate() {
             println!("  system {}", sys_id);
             for (other_id, entry) in row.entries.iter().enumerate() {
-                println!("    other {}\t{:?}", other_id, entry.integrator);
+                let a = match &entry.integrator {
+                    None => String::from("None"),
+                    Some(i) => format!("{:?}", i.variant),
+                };
+                println!("    other {}\t{:?}", other_id, a);
             }
         }
     }

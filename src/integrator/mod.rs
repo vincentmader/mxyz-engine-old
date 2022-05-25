@@ -1,8 +1,21 @@
 // use crate::entity::field::DiscreteFieldCell;
-use crate::entity::object::PhysicalObject;
+use super::entity::object::PhysicalObject;
+use super::interaction::Interaction;
 
 pub struct Integrator {
     pub variant: IntegratorVariant,
+    pub interactions: Vec<Interaction>,
+    //  TODO specify neighborhood/tree calculation (or in interaction?)
+}
+impl Integrator {
+    pub fn new(variant: IntegratorVariant) -> Self {
+        let interactions = vec![];
+        Integrator {
+            variant,
+            interactions,
+        }
+    }
+    // pub fn step()
 }
 
 // #[derive(PartialEq)]

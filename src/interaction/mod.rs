@@ -6,16 +6,22 @@ pub mod game_of_life;
 pub mod interaction_matrix;
 pub mod ising;
 mod testing;
-// use crate::integrator::Integrator;
 use interaction_matrix::InteractionMatrix;
 
 /// Interaction
 pub struct Interaction {
-    // pub active: bool,
-    pub matrix: InteractionMatrix,
     pub variant: InteractionVariant,
-    // pub integrator: Integrator,
-    //  TODO specify neighborhood/tree calculation
+    pub matrix: InteractionMatrix,
+    pub active: bool,
+}
+impl Interaction {
+    pub fn new(variant: InteractionVariant) -> Self {
+        Interaction {
+            variant,
+            matrix: InteractionMatrix::new(),
+            active: true,
+        }
+    }
 }
 /// Interaction Variant
 pub enum InteractionVariant {
