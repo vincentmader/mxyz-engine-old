@@ -1,19 +1,21 @@
 pub mod preset;
 pub mod tmp;
 use super::config::EngineConfig;
-use super::system::SystemVariant::{self, DiscreteField, PhysicalObjects};
+use super::system::System;
+use super::system::SystemVariant;
 use preset::SimulationId;
 
 /// State
 #[derive(Clone)]
 pub struct State {
     pub id: usize,
-    pub systems: Vec<SystemVariant>,
+    pub systems: Vec<System>,
 }
 impl State {
     /// Creates new instance of State Structure
     pub fn new() -> Self {
-        let (id, systems) = (0, vec![]);
+        let id = 0;
+        let systems = vec![];
         State { id, systems }
     }
     /// Initializes State & configuration

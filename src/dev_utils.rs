@@ -2,9 +2,9 @@ pub fn print_state(engine: &mxyz_engine::Engine) {
     let state = &engine.states[engine.config.step_id.0];
     println!("\n  Steps: {}", engine.config.step_id.0);
     for system in state.systems.iter() {
-        match system {
-            mxyz_engine::system::SystemVariant::PhysicalObjects(f) => {
-                for e in f.entities.iter() {
+        match system.variant {
+            mxyz_engine::system::SystemVariant::PhysicalObjects => {
+                for e in system.entities.iter() {
                     println!("    {:?}", e.get_position());
                 }
             }

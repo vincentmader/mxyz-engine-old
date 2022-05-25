@@ -5,7 +5,7 @@ use crate::interaction::force::{Force, ForceVariant};
 // use crate::interaction::interaction_matrix::InteractionMatrix;
 use crate::entity::Entity as DiscreteFieldCell;
 use crate::interaction::{Interaction, InteractionVariant};
-use crate::system::{self, SystemVariant};
+use crate::system::{self, System, SystemVariant};
 
 const NR_OF_STEPS: usize = 2221;
 
@@ -14,7 +14,7 @@ pub enum SimulationId {
 }
 
 /// Initialize State & Config
-pub fn initialize(sim_id: &Option<SimulationId>, config: &mut EngineConfig) -> Vec<SystemVariant> {
+pub fn initialize(sim_id: &Option<SimulationId>, config: &mut EngineConfig) -> Vec<System> {
     let mut systems = vec![];
     match sim_id {
         None => {}
@@ -25,12 +25,12 @@ pub fn initialize(sim_id: &Option<SimulationId>, config: &mut EngineConfig) -> V
     systems
 }
 
-pub fn three_body_figure_eight(systems: &mut Vec<SystemVariant>, config: &mut EngineConfig) {
+pub fn three_body_figure_eight(systems: &mut Vec<System>, config: &mut EngineConfig) {
     // I. SYSTEMS
     // ========================================================================
     config.step_id.1 = NR_OF_STEPS;
 
-    // Objects
+    // Objects 1
     // ------------------------------------------------------------------------
     let mut sys = system::physical_objects::PhysicalObjects::new();
     let speed = 0.;
@@ -41,11 +41,13 @@ pub fn three_body_figure_eight(systems: &mut Vec<SystemVariant>, config: &mut En
         let entity = entity::object::planet::Planet::new(m, x, v);
         sys.entities.push(Box::new(entity));
     }
-    systems.push(SystemVariant::PhysicalObjects(sys));
+    let variant = SystemVariant::PhysicalObjects;
+    let system = System::new(variant);
+    systems.push(system);
     let sys_conf = SystemConfig::new();
     config.systems.push(sys_conf);
 
-    // Objects
+    // Objects 2
     // ------------------------------------------------------------------------
     let mut sys = system::physical_objects::PhysicalObjects::new();
     let speed = 0.;
@@ -56,7 +58,9 @@ pub fn three_body_figure_eight(systems: &mut Vec<SystemVariant>, config: &mut En
         let entity = entity::object::planet::Planet::new(m, x, v);
         sys.entities.push(Box::new(entity));
     }
-    systems.push(SystemVariant::PhysicalObjects(sys));
+    let variant = SystemVariant::PhysicalObjects;
+    let system = System::new(variant);
+    systems.push(system);
     let sys_conf = SystemConfig::new();
     config.systems.push(sys_conf);
 
@@ -73,8 +77,10 @@ pub fn three_body_figure_eight(systems: &mut Vec<SystemVariant>, config: &mut En
     // 3. Matrix Integrator Init
     let integrator_variant = IntegratorVariant::EulerExplicit;
     let integrator = Integrator::new(integrator_variant);
+    // Interactions 1-1
     interaction.matrix.rows[0].entries[0].integrator = Some(integrator);
     let integrator_variant = IntegratorVariant::RungeKutta4;
+    // Interactions 2-2
     let integrator = Integrator::new(integrator_variant);
     interaction.matrix.rows[1].entries[1].integrator = Some(integrator);
     // 4. Push Interaction

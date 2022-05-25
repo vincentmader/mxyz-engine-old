@@ -1,5 +1,5 @@
 use crate::integrator::{Integrator, IntegratorVariant};
-use crate::system::SystemVariant;
+use crate::system::System;
 
 // TODO move elsewhere
 /// Interaction Matrix
@@ -11,7 +11,7 @@ impl InteractionMatrix {
         let rows = vec![];
         InteractionMatrix { rows }
     }
-    pub fn init(&mut self, systems: &Vec<SystemVariant>) {
+    pub fn init(&mut self, systems: &Vec<System>) {
         for _ in 0..systems.len() {
             let mut row = InteractionMatrixRow::new();
             row.init(&systems);
@@ -31,7 +31,7 @@ impl InteractionMatrixRow {
         let entries = vec![];
         InteractionMatrixRow { entries }
     }
-    pub fn init(&mut self, systems: &Vec<SystemVariant>) {
+    pub fn init(&mut self, systems: &Vec<System>) {
         for _ in 0..systems.len() {
             self.entries.push(InteractionMatrixEntry::new());
         }
