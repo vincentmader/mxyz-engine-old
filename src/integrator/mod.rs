@@ -48,7 +48,7 @@ impl Integrator {
                 /// - get f(t,y) as sum of f(t,y) for all interacting entities
                 /// - update velocity using f(t,y)
                 IntegratorVariant::EulerExplicit => {
-                    let acceleration = [0., 0., 0.];
+                    let mut acceleration = [0., 0., 0.];
                     /// Loops over the other systems
                     for other_id in other_ids.iter() {
                         let other = &state.systems[*other_id];
@@ -72,7 +72,8 @@ impl Integrator {
                                     InteractionVariant::Force(f) => {
                                         let mass_1 = entity.get_mass(); // TODO move further up?
                                         let force = [0., 0., 0.]; //  TODO calculate force
-                                        let acceleration = [
+                                        f.calculate_from(entity, other);
+                                        acceleration = [
                                             acceleration[0] + force[0] / mass_1,
                                             acceleration[1] + force[1] / mass_1,
                                             acceleration[2] + force[2] / mass_1,
