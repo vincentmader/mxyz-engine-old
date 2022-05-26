@@ -1,9 +1,17 @@
 use crate::entity::Entity;
-// use crate::entity::field::DiscreteFieldCell;
-// use crate::entity::object::PhysicalObject;
-// use crate::integrator::{self, Integrator, IntegratorVariant};
 
 const G: f64 = 1.; // TODO move else-where
+
+#[derive(Debug)]
+pub enum ForceVariant {
+    Coulomb,
+    NewtonianGravity,
+    LennardJones,
+    Hooke,
+    Cohesion,
+    Avoidance,
+    Alignment,
+}
 
 #[derive(Debug)]
 pub struct Force {
@@ -30,24 +38,6 @@ impl Force {
         };
         force
     }
-    // pub fn _apply_to_field_from_field(
-    //     &self,
-    //     _entities: &mut Vec<Box<dyn DiscreteFieldCell>>,
-    //     _others: &Vec<Box<dyn DiscreteFieldCell>>,
-    // ) {
-    // }
-    // pub fn _apply_to_field_from_objects(
-    //     &self,
-    //     _entities: &mut Vec<Box<dyn DiscreteFieldCell>>,
-    //     _others: &Vec<Box<dyn PhysicalObject>>,
-    // ) {
-    // }
-    // pub fn _apply_to_objects_from_field(
-    //     &self,
-    //     _entities: &mut Vec<Box<dyn PhysicalObject>>,
-    //     _others: &Vec<Box<dyn DiscreteFieldCell>>,
-    // ) {
-    // }
     // pub fn apply_to_objects_from_objects(
     //     &self,
     //     entities: &mut Vec<Box<dyn PhysicalObject>>,
@@ -83,17 +73,6 @@ impl Force {
     //         }
     //     }
     // }
-}
-
-#[derive(Debug)]
-pub enum ForceVariant {
-    Coulomb,
-    NewtonianGravity,
-    LennardJones,
-    Hooke,
-    Cohesion,
-    Avoidance,
-    Alignment,
 }
 
 // fn _force_coulomb(entity: &Box<dyn PhysicalObject>, other: &Box<dyn PhysicalObject>) -> [f64; 3] {
