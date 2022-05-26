@@ -1,32 +1,8 @@
 use super::entity::Entity as PhysicalObject;
 use super::interaction::Interaction;
+use crate::state::State;
 use crate::system::System;
 
-pub struct Integrator {
-    pub variant: IntegratorVariant,
-    pub interactions: Vec<Interaction>,
-    //  TODO specify neighborhood/tree calculation (or in interaction?)
-}
-impl Integrator {
-    pub fn new(variant: IntegratorVariant) -> Self {
-        let interactions = vec![];
-        Integrator {
-            variant,
-            interactions,
-        }
-    }
-    pub fn step(&self, system: &mut System, other: &System, interaction: &Interaction) {
-        match self.variant {
-            IntegratorVariant::EulerExplicit => {}
-            _ => {}
-        }
-        for entity in system.entities.iter_mut() {
-            for other in other.entities.iter() {}
-        }
-    }
-}
-
-// #[derive(PartialEq)]
 #[derive(Debug)]
 /// Entity Integrator
 pub enum IntegratorVariant {
@@ -42,6 +18,44 @@ pub enum IntegratorVariant {
     Collision,
     CellularAutomaton,
     MonteCarlo,
+}
+
+#[derive(Debug)]
+pub struct Integrator {
+    pub variant: IntegratorVariant,
+    pub interactions: Vec<Interaction>,
+    //  TODO specify neighborhood/tree calculation (or in interaction?)
+}
+impl Integrator {
+    pub fn new(variant: IntegratorVariant) -> Self {
+        let interactions = vec![];
+        Integrator {
+            variant,
+            interactions,
+        }
+    }
+    pub fn step(&self, system: &mut System, state: &State, other_ids: &Vec<usize>) {
+        match self.variant {
+            IntegratorVariant::EulerExplicit => {
+                for other_id in other_ids.iter() {
+                    let other = &state.systems[*other_id];
+                    for interaction in self.interactions.iter() {
+                        if !interaction.matrix.entries[*other_id].unwrap() {
+                            continue;
+                        }
+                        println!("\t\t{:#?}: {}-{}", self.variant, system.id, other_id);
+                    }
+                }
+            }
+            IntegratorVariant::CellularAutomaton => {
+                for other_id in other_ids.iter() {
+                    let _other = &state.systems[*other_id];
+                    // println!("\t\t{:#?}: {} - {}", self.variant, system.id, other_id);
+                }
+            }
+            _ => todo!(),
+        }
+    }
 }
 
 pub fn euler_explicit(

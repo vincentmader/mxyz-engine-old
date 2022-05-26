@@ -15,5 +15,5 @@ fn main() {
     let duration = start_time.elapsed().as_millis();
     println!("\nruntime:\t{} ms", duration);
     dev_utils::print_state(&engine);
-    dev_utils::print_interaction_matrix(&engine);
+    // dev_utils::print_interaction_matrix(&engine);
 }

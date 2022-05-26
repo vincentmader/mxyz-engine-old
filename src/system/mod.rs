@@ -2,8 +2,16 @@ pub mod discrete_field;
 pub mod physical_objects;
 use super::config::EngineConfig;
 use super::entity::Entity;
+use super::integrator::Integrator;
 use super::state::tmp;
 use super::state::State;
+
+/// System Variant Enumeration
+#[derive(Clone)]
+pub enum SystemVariant {
+    DiscreteField,
+    PhysicalObjects,
+}
 
 /// System Structure
 #[derive(Clone)]
@@ -23,46 +31,34 @@ impl System {
         }
     }
     pub fn step(&mut self, config: &EngineConfig, states: &Vec<State>) {
-        /// Loads current State
-        let current_state = &states[config.step_id.0];
         let system_id = self.id; // TODO some-day, remove (with trees)
+        println!("\tSYSTEM {}", self.id);
 
-        for (other_id, other) in current_state.systems.iter().enumerate() {
-            // println!("    {} - {}", system_id, other_id);
-            /// Loads interactions for each pair
-            let interactions = tmp::get_interactions(system_id, other_id, &config); // TODO clean up?
-            let _self_interaction = system_id == other_id; // TODO some-day, remove (with trees)
-            /// Applies interactions between systems (Pass to System)
-            for interaction in interactions {
-                let matrix = &interaction.matrix;
-                let integrator = &matrix.rows[system_id].entries[other_id].integrator;
-                match integrator {
-                    None => {}
-                    Some(integrator) => integrator.step(self, other, interaction),
-                }
-            }
+        /// Loads current State
+        let state = &states[config.step_id.0];
+        /// Gets all Integrators for this System
+        let integrators = tmp::get_integrators(system_id, &config).unwrap();
+        /// Loops over Integrators & Applies
+        for integrator in integrators {
+            let other_ids = get_other_ids(&integrator, &state);
+            integrator.step(self, &state, &other_ids);
         }
     }
 }
 
-/// System Variant Enumeration
-#[derive(Clone)]
-pub enum SystemVariant {
-    DiscreteField,
-    PhysicalObjects,
+pub fn get_other_ids(integrator: &Integrator, state: &State) -> Vec<usize> {
+    (0..state.systems.len())
+        .filter(|id| {
+            let mut foo = false;
+            for interaction in integrator.interactions.iter() {
+                if match interaction.matrix.entries[*id] {
+                    None => false,
+                    Some(active) => active,
+                } {
+                    foo = true;
+                }
+            }
+            foo
+        })
+        .collect()
 }
-
-// match system {
-//     DiscreteField(system) => match other {
-//         DiscreteField(other) => system.step(),
-//         PhysicalObjects(other) => system.step(),
-//     },
-//     PhysicalObjects(system) => match other {
-//         DiscreteField(other) => system.step(interactions),
-//         PhysicalObjects(other) => system.step(interactions),
-//     },
-// }
-// system.interact_with_field(&other, ints, cfg, self_interaction);
-// system.interact_with_objects(&other, ints, cfg, self_interaction);
-// system.interact_with_field(&other, ints, cfg, self_interaction);
-// system.interact_with_objects(&other, ints, cfg, self_interaction);

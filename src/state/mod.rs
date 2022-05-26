@@ -23,12 +23,15 @@ impl State {
     }
     /// Forwards State
     pub fn step(&mut self, config: &EngineConfig, states: &Vec<State>) {
-        // println!("\n{}. ----------------------------------", config.step_id.0);
+        println!("\n--------\n {}.\n--------\n", config.step_id.0);
         /// Creates "neighborhoods"
         let _neighborhoods = tmp::prepare_neighborhoods(); // TODO get relevant neighbors/nodes
+        /// Prepare system-ids   TODO remove maybe?
+        for (id, sys) in self.systems.iter_mut().enumerate() {
+            sys.id = id; // needed e.g. when removing/adding systems
+        }
         /// Loops over all pairs of systems
-        for (system_id, system) in self.systems.iter_mut().enumerate() {
-            system.id = system_id; // TODO comment: why?
+        for system in self.systems.iter_mut() {
             system.step(&config, &states);
         }
     }

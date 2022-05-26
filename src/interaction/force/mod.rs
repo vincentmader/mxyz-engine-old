@@ -3,6 +3,7 @@ use crate::entity::Entity as PhysicalObject;
 // use crate::entity::object::PhysicalObject;
 // use crate::integrator::{self, Integrator, IntegratorVariant};
 
+#[derive(Debug)]
 pub struct Force {
     pub variant: ForceVariant,
 }
@@ -65,6 +66,7 @@ impl Force {
     // }
 }
 
+#[derive(Debug)]
 pub enum ForceVariant {
     Coulomb,
     NewtonianGravity,

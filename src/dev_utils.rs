@@ -14,22 +14,20 @@ pub fn print_state(engine: &mxyz_engine::Engine) {
     println!("");
 }
 
-pub fn print_interaction_matrix(engine: &mxyz_engine::Engine) {
-    let interactions = &engine.config.interactions;
-    for (int_id, interaction) in interactions.iter().enumerate() {
-        println!("interaction {}", int_id);
-
-        let matrix = &interaction.matrix;
-        for (sys_id, row) in matrix.rows.iter().enumerate() {
-            println!("  system {}", sys_id);
-            for (other_id, entry) in row.entries.iter().enumerate() {
-                let a = match &entry.integrator {
-                    None => String::from("None"),
-                    Some(i) => format!("{:?}", i.variant),
-                };
-                println!("    other {}\t{:?}", other_id, a);
+pub fn _print_interaction_matrix(engine: &mxyz_engine::Engine) {
+    for (system_id, _system) in engine.states[engine.config.step_id.0]
+        .systems
+        .iter()
+        .enumerate()
+    {
+        let integrators = &engine.config.integrators[system_id];
+        for (integrator_id, integrator) in integrators.iter().enumerate() {
+            for (interaction_id, interaction) in integrator.interactions.iter().enumerate() {
+                println!(
+                    "\n\nSystem {}, Integrator {}, Interaction {}: {:#?}",
+                    system_id, integrator_id, interaction_id, interaction.matrix
+                );
             }
         }
     }
-    println!("");
 }

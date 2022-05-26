@@ -2,8 +2,6 @@ use crate::config::{EngineConfig, SystemConfig};
 use crate::entity;
 use crate::integrator::{Integrator, IntegratorVariant};
 use crate::interaction::force::{Force, ForceVariant};
-// use crate::interaction::interaction_matrix::InteractionMatrix;
-// use crate::entity::Entity as DiscreteFieldCell;
 use crate::interaction::{Interaction, InteractionVariant};
 use crate::system::{self, System, SystemVariant};
 
@@ -30,7 +28,7 @@ pub fn three_body_figure_eight(systems: &mut Vec<System>, config: &mut EngineCon
     // ========================================================================
     config.step_id.1 = NR_OF_STEPS;
 
-    // Objects 1
+    // System 0: Objects
     // ------------------------------------------------------------------------
     let mut sys = system::physical_objects::PhysicalObjects::new();
     let speed = 0.;
@@ -47,15 +45,12 @@ pub fn three_body_figure_eight(systems: &mut Vec<System>, config: &mut EngineCon
     let sys_conf = SystemConfig::new();
     config.systems.push(sys_conf);
 
-    // Objects 2
+    // System 1: Field
     // ------------------------------------------------------------------------
-    let mut sys = system::physical_objects::PhysicalObjects::new();
-    let speed = 0.;
-    for entity_id in 0..2 {
-        let m = 1.;
-        let x = [2. * (entity_id as f64 - 0.5), 0., 0.];
-        let v = [0., speed * (2. * entity_id as f64 - 1.), 0.];
-        let entity = entity::object::planet::Planet::new(m, x, v);
+    let mut sys = system::discrete_field::DiscreteField::new();
+    for _ in 0..2 {
+        let (vel, dens) = ([0., 0., 0.], 0.);
+        let entity = entity::field::fluid_cell::FluidCell::new(vel, dens);
         sys.entities.push(Box::new(entity));
     }
     let variant = SystemVariant::PhysicalObjects;
@@ -64,25 +59,34 @@ pub fn three_body_figure_eight(systems: &mut Vec<System>, config: &mut EngineCon
     let sys_conf = SystemConfig::new();
     config.systems.push(sys_conf);
 
-    // II. INTERACTIONS ()
+    // III.INTEGRATORS
     // ========================================================================
-    let interactions = &mut config.interactions;
 
-    // 1. Interaction Variant
+    // System 0: Objects
+    // ------------------------------------------------------------------------
+    let mut integrators = vec![];
+    let mut integrator = Integrator::new(IntegratorVariant::EulerExplicit);
+    let mut interactions = vec![];
     let force = Force::new(ForceVariant::NewtonianGravity);
-    let interaction_variant = InteractionVariant::Force(force);
-    // 2. Interaction Init
-    let mut interaction = Interaction::new(interaction_variant);
+    let mut interaction = Interaction::new(InteractionVariant::Force(force));
     interaction.matrix.init(&systems);
-    // 3. Matrix Integrator Init
-    let integrator_variant = IntegratorVariant::EulerExplicit;
-    let integrator = Integrator::new(integrator_variant);
-    // Interactions 1-1
-    interaction.matrix.rows[0].entries[0].integrator = Some(integrator);
-    let integrator_variant = IntegratorVariant::RungeKutta4;
-    // Interactions 2-2
-    let integrator = Integrator::new(integrator_variant);
-    interaction.matrix.rows[1].entries[1].integrator = Some(integrator);
-    // 4. Push Interaction
+    interaction.matrix.entries[0] = Some(true);
     interactions.push(interaction);
+    integrator.interactions = interactions;
+    integrators.push(integrator);
+    config.integrators.push(integrators);
+
+    // System 1: Field
+    // ------------------------------------------------------------------------
+    let mut integrators = vec![];
+    let mut integrator = Integrator::new(IntegratorVariant::CellularAutomaton);
+    let mut interactions = vec![];
+    let force = Force::new(ForceVariant::NewtonianGravity);
+    let mut interaction = Interaction::new(InteractionVariant::Force(force));
+    interaction.matrix.init(&systems);
+    interaction.matrix.entries[0] = Some(true);
+    interactions.push(interaction);
+    integrator.interactions = interactions;
+    integrators.push(integrator);
+    config.integrators.push(integrators);
 }
