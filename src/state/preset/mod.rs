@@ -1,4 +1,4 @@
-use crate::config::{EngineConfig, SystemConfig};
+use crate::config::EngineConfig;
 use crate::entity;
 use crate::integrator::{Integrator, IntegratorVariant};
 use crate::interaction::force::{Force, ForceVariant};
@@ -30,34 +30,29 @@ pub fn three_body_figure_eight(systems: &mut Vec<System>, config: &mut EngineCon
 
     // System 0: Objects
     // ------------------------------------------------------------------------
-    let mut sys = system::physical_objects::PhysicalObjects::new();
+    let variant = SystemVariant::PhysicalObjects;
+    let mut system = System::new(variant);
     let speed = 0.;
     for entity_id in 0..2 {
         let m = 1.;
         let x = [2. * (entity_id as f64 - 0.5), 0., 0.];
         let v = [0., speed * (2. * entity_id as f64 - 1.), 0.];
         let entity = entity::object::planet::Planet::new(m, x, v);
-        sys.entities.push(Box::new(entity));
+        system.entities.push(Box::new(entity));
     }
-    let variant = SystemVariant::PhysicalObjects;
-    let system = System::new(variant);
     systems.push(system);
-    let sys_conf = SystemConfig::new();
-    config.systems.push(sys_conf);
 
     // System 1: Field
     // ------------------------------------------------------------------------
-    let mut sys = system::discrete_field::DiscreteField::new();
-    for _ in 0..2 {
-        let (vel, dens) = ([0., 0., 0.], 0.);
-        let entity = entity::field::fluid_cell::FluidCell::new(vel, dens);
-        sys.entities.push(Box::new(entity));
-    }
     let variant = SystemVariant::PhysicalObjects;
-    let system = System::new(variant);
+    let mut system = System::new(variant);
+    for _ in 0..2 {
+        let vel = [0., 0., 0.];
+        let dens = 1.;
+        let entity = entity::field::fluid_cell::FluidCell::new(vel, dens);
+        system.entities.push(Box::new(entity));
+    }
     systems.push(system);
-    let sys_conf = SystemConfig::new();
-    config.systems.push(sys_conf);
 
     // III.INTEGRATORS
     // ========================================================================
@@ -89,4 +84,6 @@ pub fn three_body_figure_eight(systems: &mut Vec<System>, config: &mut EngineCon
     integrator.interactions = interactions;
     integrators.push(integrator);
     config.integrators.push(integrators);
+
+    println!("\n\n{}", systems[0].entities.len());
 }

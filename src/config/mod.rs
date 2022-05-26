@@ -1,23 +1,23 @@
 pub mod system;
 use super::integrator::Integrator;
-pub use system::SystemConfig;
+// pub use system::SystemConfig;
 
 pub struct EngineConfig {
     pub step_id: (usize, usize),
-    pub systems: Vec<SystemConfig>,
+    // pub systems: Vec<SystemConfig>,
     // pub interactions: Vec<Interaction>,
     pub integrators: Vec<Vec<Integrator>>,
     pub constants: Constants,
 }
 impl EngineConfig {
     pub fn new() -> Self {
-        let systems = vec![];
+        // let systems = vec![];
         // let interactions = vec![];
         let integrators = vec![];
         let step_id = (0, usize::MAX);
         let constants = Constants::new();
         EngineConfig {
-            systems,
+            // systems,
             // interactions,
             integrators,
             step_id,
