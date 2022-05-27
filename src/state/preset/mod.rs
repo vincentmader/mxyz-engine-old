@@ -3,7 +3,7 @@ use crate::entity;
 use crate::integrator::{Integrator, IntegratorVariant};
 use crate::interaction::force::{Force, ForceVariant};
 use crate::interaction::{Interaction, InteractionVariant};
-use crate::system::{self, System, SystemVariant};
+use crate::system::{System, SystemVariant};
 
 const NR_OF_STEPS: usize = 2221;
 

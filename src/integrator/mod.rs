@@ -2,7 +2,7 @@ use super::interaction::{Interaction, InteractionVariant};
 use crate::state::State;
 use crate::system::System;
 
-const dt: f64 = 0.001; // TODO move else-where
+const DT: f64 = 0.001; // TODO move else-where
 
 #[derive(Debug)]
 /// Entity Integrator
@@ -74,9 +74,9 @@ impl Integrator {
                                         let force = [0., 0., 0.]; //  TODO calculate force
                                         f.calculate_from(entity, other);
                                         acceleration = [
-                                            acceleration[0] + force[0] / mass_1,
-                                            acceleration[1] + force[1] / mass_1,
-                                            acceleration[2] + force[2] / mass_1,
+                                            acceleration[0] + force[0] / mass_1 * DT,
+                                            acceleration[1] + force[1] / mass_1 * DT,
+                                            acceleration[2] + force[2] / mass_1 * DT,
                                         ];
                                     }
                                     _ => todo!(),
@@ -87,9 +87,9 @@ impl Integrator {
                     /// Updates Position Vector
                     let velocity = entity.get_velocity();
                     let velocity = [
-                        velocity[0] + acceleration[0] * dt,
-                        velocity[1] + acceleration[1] * dt,
-                        velocity[2] + acceleration[2] * dt,
+                        velocity[0] + acceleration[0] * DT,
+                        velocity[1] + acceleration[1] * DT,
+                        velocity[2] + acceleration[2] * DT,
                     ];
                     entity.set_velocity(&velocity);
                 }
