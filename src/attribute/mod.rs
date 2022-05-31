@@ -76,6 +76,13 @@ pub trait Temperature {
     }
     fn set_temperature(&mut self, _temperature: f64) {}
 }
+/// Pressure
+pub trait Pressure {
+    fn get_pressure(&self) -> f64 {
+        0.
+    }
+    fn set_pressure(&mut self, _pressure: f64) {}
+}
 /// GameOfLifeState
 ///
 /// - TODO: use Spin instead?
