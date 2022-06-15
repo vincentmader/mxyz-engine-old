@@ -36,67 +36,14 @@ impl Integrator {
         }
     }
     pub fn step(&self, system: &mut System, state: &State, other_ids: &Vec<usize>) {
-        /// Loops over entities (they all need to be updated!)
-        let entity_ids = 0..system.entities.len(); // TODO only update some?
-        for entity_id in entity_ids {
-            let entity = &mut system.entities[entity_id];
-            /// Depending on IntegratorVariant, the Updating can take on different forms
-            match self.variant {
-                /// For Explicit Euler:
-                /// - dy/dt = a(t,y) =  f(t,y)
-                /// Steps:
-                /// - get f(t,y) as sum of f(t,y) for all interacting entities
-                /// - update velocity using f(t,y)
-                IntegratorVariant::EulerExplicit => {
-                    let mut acceleration = [0., 0., 0.];
-                    /// Loops over the other systems
-                    for other_id in other_ids.iter() {
-                        let other = &state.systems[*other_id];
-                        /// Loops over the Integrator's Interactions (skips if it doesn't apply)
-                        //  TODO get interactions to-apply outside of entity-loop
-                        for interaction in self.interactions.iter() {
-                            if interaction.matrix.entries[*other_id].unwrap() == false {
-                                continue;
-                            }
-                            println!("\t\t{:#?}: {}-{}", self.variant, system.id, other_id);
-                            /// Loops over the Entities in the interacting System
-                            let other_ids = 0..other.entities.len(); // TODO get ids
-                            for other_id in other_ids {
-                                let other = &other.entities[other_id];
-                                println!(
-                                    "\t\t\t{}-{}: {:?}",
-                                    entity_id, other_id, interaction.variant
-                                );
-                                /// Updates Velocity
-                                match &interaction.variant {
-                                    InteractionVariant::Force(f) => {
-                                        let mass_1 = entity.get_mass(); // TODO move further up?
-                                        let force = [0., 0., 0.]; //  TODO calculate force
-                                        f.calculate_from(entity, other);
-                                        acceleration = [
-                                            acceleration[0] + force[0] / mass_1 * DT,
-                                            acceleration[1] + force[1] / mass_1 * DT,
-                                            acceleration[2] + force[2] / mass_1 * DT,
-                                        ];
-                                    }
-                                    _ => todo!(),
-                                }
-                            }
-                        }
-                    }
-                    /// Updates Position Vector
-                    let velocity = entity.get_velocity();
-                    let velocity = [
-                        velocity[0] + acceleration[0] * DT,
-                        velocity[1] + acceleration[1] * DT,
-                        velocity[2] + acceleration[2] * DT,
-                    ];
-                    entity.set_velocity(&velocity);
-                }
-                IntegratorVariant::CellularAutomaton => {}
-                _ => todo!(),
-            }
-        }
+        println!("\t{:#?}: {:?}", self.variant, other_ids);
+        let stepper = match self.variant {
+            IntegratorVariant::EulerExplicit => euler_explicit,
+            IntegratorVariant::CellularAutomaton => cellular_automaton,
+            IntegratorVariant::Collision => collision,
+            _ => todo!(),
+        };
+        stepper(system, state, other_ids, &self.interactions);
     }
 }
 
@@ -130,3 +77,78 @@ impl Integrator {
 //     _force_getter: fn(&Box<dyn PhysicalObject>, &Box<dyn PhysicalObject>) -> [f64; 3],
 // ) {
 // }
+
+/// Explicit Euler:
+/// - dy/dt = a(t,y) =  f(t,y)
+/// Steps:
+/// - get f(t,y) as sum of f(t,y) for all interacting entities
+/// - update velocity using f(t,y)
+fn euler_explicit(
+    system: &mut System,
+    state: &State,
+    other_ids: &Vec<usize>,
+    interactions: &Vec<Interaction>,
+) {
+    let entity_ids = 0..system.entities.len(); // TODO only update some?
+    for entity_id in entity_ids {
+        println!("\t\tENT-{}", entity_id);
+        let entity = &mut system.entities[entity_id];
+        let mut acceleration = [0., 0., 0.];
+        /// Loops over the other systems
+        for other_id in other_ids.iter() {
+            let other = &state.systems[*other_id];
+            /// Loops over the Integrator's Interactions (skips if it doesn't apply)
+            //  TODO get interactions to-apply outside of entity-loop
+            println!("\t\t\tOTHER-{}", other_id);
+            for interaction in interactions.iter() {
+                if interaction.matrix.entries[*other_id].unwrap() == false {
+                    continue;
+                }
+                println!("\t\t\t\t{:?}", interaction.variant);
+                /// Loops over the Entities in the interacting System
+                let other_ids = 0..other.entities.len(); // TODO get ids
+                for other_id in other_ids {
+                    let other = &other.entities[other_id];
+                    /// Updates Velocity
+                    match &interaction.variant {
+                        InteractionVariant::Force(f) => {
+                            let mass_1 = entity.get_mass(); // TODO move further up?
+                            let force = f.calculate_from(entity, other);
+                            println!("\t\t\t\t\tENT-{}\t-> F = {:?}", other_id, force);
+                            acceleration = [
+                                acceleration[0] + force[0] / mass_1 * DT,
+                                acceleration[1] + force[1] / mass_1 * DT,
+                                acceleration[2] + force[2] / mass_1 * DT,
+                            ];
+                        }
+                        _ => todo!(),
+                    }
+                }
+            }
+        }
+        /// Updates Position Vector
+        let velocity = entity.get_velocity();
+        let velocity = [
+            velocity[0] + acceleration[0] * DT,
+            velocity[1] + acceleration[1] * DT,
+            velocity[2] + acceleration[2] * DT,
+        ];
+        entity.set_velocity(&velocity);
+    }
+}
+
+pub fn cellular_automaton(
+    _system: &mut System,
+    _state: &State,
+    _other_ids: &Vec<usize>,
+    _interactions: &Vec<Interaction>,
+) {
+}
+
+pub fn collision(
+    _system: &mut System,
+    _state: &State,
+    _other_ids: &Vec<usize>,
+    _interactions: &Vec<Interaction>,
+) {
+}
