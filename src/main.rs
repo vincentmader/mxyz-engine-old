@@ -9,11 +9,11 @@ fn main() {
     engine.init(&Some(SimulationId::ThreeBodyFigureEight));
 
     /// Runs Engine & Records Execution Time
-    dev_utils::print_state(&engine);
+    // dev_utils::print_state(&engine);
     let start_time = std::time::Instant::now();
     engine.run();
     let duration = start_time.elapsed().as_millis();
     println!("\nruntime:\t{} ms", duration);
-    dev_utils::print_state(&engine);
+    // dev_utils::print_state(&engine);
     // dev_utils::print_interaction_matrix(&engine);
 }

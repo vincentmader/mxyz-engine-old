@@ -32,13 +32,13 @@ impl System {
     }
     /// Forwards System to next Time-Step
     pub fn step(&mut self, config: &EngineConfig, states: &Vec<State>) {
-        let system_id = self.id; // TODO some-day, remove (with trees)
         println!(
-            "\tSYS-{}: {:?} ({} entities)",
+            "SYS-{}: {:?} ({} entities)",
             self.id,
             self.variant,
             self.entities.len()
         );
+        let system_id = self.id; // TODO some-day, remove (with trees)
         /// Loads current State
         let state = &states[config.step_id.0];
         /// Gets all Integrators for this System

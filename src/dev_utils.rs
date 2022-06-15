@@ -1,11 +1,20 @@
-pub fn print_state(engine: &mxyz_engine::Engine) {
+#![allow(unreachable_patterns)]
+
+pub fn _print_state(engine: &mxyz_engine::Engine) {
     let state = &engine.states[engine.config.step_id.0];
     println!("\n  Steps: {}", engine.config.step_id.0);
     for system in state.systems.iter() {
         match system.variant {
             mxyz_engine::system::SystemVariant::PhysicalObjects => {
+                println!("objects");
                 for e in system.entities.iter() {
                     println!("    {:?}", e.get_position());
+                }
+            }
+            mxyz_engine::system::SystemVariant::DiscreteField => {
+                println!("field");
+                for e in system.entities.iter() {
+                    println!("    {:?}", e.get_position()); // TODO
                 }
             }
             _ => todo!(),
