@@ -1,6 +1,7 @@
+pub mod attribute;
 pub mod field;
 pub mod object;
-use super::attribute::*;
+use attribute::*;
 
 /// Entity Trait: Discrete Field Cell
 pub trait Entity: EntityClone + Mass + Position + Velocity + Charge + Density + Force {}

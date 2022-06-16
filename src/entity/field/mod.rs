@@ -1,5 +1,5 @@
 pub mod fluid_cell;
-use crate::attribute::*;
+use crate::entity::attribute::*;
 
 pub trait DiscreteFieldCell: Density + Velocity + Force {}
 

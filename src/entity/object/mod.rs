@@ -1,5 +1,5 @@
 pub mod planet;
-use crate::attribute::*;
+use crate::entity::attribute::*;
 
 pub trait PhysicalObject: Mass + Position + Velocity + Charge {}
 
