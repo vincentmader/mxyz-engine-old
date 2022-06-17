@@ -1,6 +1,6 @@
 use crate::entity::attribute::*;
-// use crate::entity::object::PhysicalObject;
 use crate::entity::Entity;
+use crate::system::ToBytes;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -10,7 +10,13 @@ pub struct Planet {
     pub mass: f64,
 }
 impl Entity for Planet {}
-// impl MassiveParticle for Planet {}
+impl ToBytes for Planet {
+    fn to_bytes(&self) -> Vec<u8> {
+        let bytes = vec![];
+        // ... TODO
+        bytes
+    }
+}
 impl Planet {
     pub fn new(mass: f64, position: [f64; 3], velocity: [f64; 3]) -> Self {
         Planet {

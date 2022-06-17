@@ -43,10 +43,35 @@ impl System {
         let state = &states[config.step_id.0];
         /// Gets all Integrators for this System
         let integrators = tmp::get_integrators(system_id, &config).unwrap();
-        /// Loops over Integrators & Applies
+        /// Loops over Integrators & Applies Interactions
         for integrator in integrators {
             let other_ids = tmp::get_other_ids(&integrator, &state);
             integrator.step(self, &state, &other_ids);
         }
     }
+}
+impl ToBytes for System {
+    fn to_bytes(&self) -> Vec<u8> {
+        let bytes = vec![];
+
+        let _system_variant_id = match self.variant {
+            SystemVariant::PhysicalObjects => 0,
+            SystemVariant::DiscreteField => 1,
+            _ => todo!(),
+        };
+
+        for entity in self.entities.iter() {
+            let _foo = entity.to_bytes();
+        }
+        //...
+        bytes
+    }
+}
+
+// TODO move else-where
+pub trait ToBytes {
+    fn to_bytes(&self) -> Vec<u8>;
+}
+pub trait FromBytes {
+    fn from_bytes(bytes: Vec<u8>) -> Self;
 }

@@ -1,10 +1,14 @@
 pub mod attribute;
 pub mod field;
 pub mod object;
+use crate::system::ToBytes;
 use attribute::*;
 
-/// Entity Trait: Discrete Field Cell
-pub trait Entity: EntityClone + Mass + Position + Velocity + Charge + Density + Force {}
+/// Entity Trait
+pub trait Entity:
+    EntityClone + Mass + Position + Velocity + Charge + Density + Force + ToBytes
+{
+}
 pub trait EntityClone {
     fn clone_box(&self) -> Box<dyn Entity>;
 }

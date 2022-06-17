@@ -5,8 +5,9 @@
     version = "0.1.0"
 
 [dependencies]
-    # mxyz-utils = { path="../mxyz-utils" }
     serde_json = "1.0"
+    mxyz-database = { path = "../mxyz-database" }
+    mxyz-utils = { path="../mxyz-utils" }
 
 [dependencies.serde]
     version = "1.0"
