@@ -1,5 +1,15 @@
 use super::system::System;
 
+/// Neighboorhood Variant (not used at all a.t.m.)
+pub enum _NeighbordhoodVariant {
+    World,
+    OctTree,
+    Sectors,
+    Random,
+    Moore,
+    VonNeumann,
+}
+
 /// Neighbordhood Trait
 pub trait Neighboorhood {
     fn for_entity(&self, entity: (usize, usize), system: System) -> Vec<usize>;
