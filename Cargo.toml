@@ -8,6 +8,7 @@
     serde_json = "1.0"
     mxyz-database = { path = "../mxyz-database" }
     mxyz-utils = { path="../mxyz-utils" }
+    rand = "0.8.5"
 
 [dependencies.serde]
     version = "1.0"

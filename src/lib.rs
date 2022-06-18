@@ -10,9 +10,9 @@ pub mod engine;
 pub mod entity;
 pub mod integrator;
 pub mod interaction;
+pub mod neighborhood;
 pub mod state;
 pub mod system;
-// pub mod neighborhood;
 // pub mod statistics;
 
 pub use engine::Engine;
