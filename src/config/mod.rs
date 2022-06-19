@@ -8,6 +8,7 @@ pub struct EngineConfig {
     // pub interactions: Vec<Interaction>,
     pub integrators: Vec<Vec<Integrator>>,
     pub constants: Constants,
+    pub export_variant: ExportVariant,
 }
 impl EngineConfig {
     pub fn new() -> Self {
@@ -16,12 +17,14 @@ impl EngineConfig {
         let integrators = vec![];
         let step_id = (0, usize::MAX);
         let constants = Constants::new();
+        let export_variant = ExportVariant::ToDatabase;
         EngineConfig {
             // systems,
             // interactions,
             integrators,
             step_id,
             constants,
+            export_variant,
         }
     }
 }
@@ -34,6 +37,11 @@ impl Constants {
         let g = 1.;
         Constants { _g: g }
     }
+}
+
+pub enum ExportVariant {
+    ToDatabase,
+    ToFile,
 }
 
 // // TODO move else-where

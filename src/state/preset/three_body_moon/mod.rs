@@ -27,18 +27,6 @@ pub fn preset(systems: &mut Vec<System>, config: &mut EngineConfig) {
     }
     systems.push(system);
 
-    // System 1: Field
-    // ------------------------------------------------------------------------
-    let variant = SystemVariant::DiscreteField;
-    let mut system = System::new(variant);
-    for _ in 0..2 {
-        let vel = [0., 0., 0.];
-        let dens = 1.;
-        let entity = entity::field::fluid_cell::FluidCell::new(vel, dens);
-        system.entities.push(Box::new(entity));
-    }
-    systems.push(system);
-
     // III.INTEGRATORS
     // ========================================================================
 
@@ -55,41 +43,10 @@ pub fn preset(systems: &mut Vec<System>, config: &mut EngineConfig) {
     interaction.matrix.entries[0] = Some(true);
     interactions.push(interaction);
     //
-    let force = Force::new(ForceVariant::Coulomb);
-    let mut interaction = Interaction::new(InteractionVariant::Force(force));
-    interaction.matrix.init(&systems);
-    interaction.matrix.entries[0] = Some(true);
-    interactions.push(interaction);
-    //
-    integrator.interactions = interactions;
-    integrators.push(integrator);
-    //
-    let mut integrator = Integrator::new(IntegratorVariant::Collision);
-    let mut interactions = vec![];
-    //
-    let coll = Collision::new();
-    let mut interaction = Interaction::new(InteractionVariant::Collision(coll));
-    interaction.matrix.init(&systems);
-    interaction.matrix.entries[0] = Some(true);
-    interactions.push(interaction);
     integrator.interactions = interactions;
     integrators.push(integrator);
     //
     config.integrators.push(integrators); // TODO needs to be run for each system!
-
-    // System 1: Field
-    // ------------------------------------------------------------------------
-    let mut integrators = vec![];
-    let mut integrator = Integrator::new(IntegratorVariant::CellularAutomaton);
-    let mut interactions = vec![];
-    let force = Force::new(ForceVariant::NewtonianGravity);
-    let mut interaction = Interaction::new(InteractionVariant::Force(force));
-    interaction.matrix.init(&systems);
-    interaction.matrix.entries[0] = Some(true);
-    interactions.push(interaction);
-    integrator.interactions = interactions;
-    integrators.push(integrator);
-    config.integrators.push(integrators);
 
     println!("\n\n{}", systems[0].entities.len());
 }
