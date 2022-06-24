@@ -24,6 +24,7 @@ pub enum InteractionVariant {
 pub struct Interaction {
     pub variant: InteractionVariant,
     pub matrix: InteractionVector,
+    // pub neighborhoods:Vec<>
     pub active: bool,
 }
 impl Interaction {

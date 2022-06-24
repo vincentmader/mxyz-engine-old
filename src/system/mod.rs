@@ -4,6 +4,7 @@ use super::config::EngineConfig;
 use super::entity::Entity;
 use super::state::tmp;
 use super::state::State;
+// use serde::{Deserialize, Serialize};
 
 /// System Variant Enumeration
 #[derive(Debug, Clone)]
@@ -65,6 +66,15 @@ impl ToBytes for System {
         }
         //...
         bytes
+    }
+}
+impl System {
+    pub fn get_variant_id(system_variant: &SystemVariant) -> usize {
+        match system_variant {
+            SystemVariant::PhysicalObjects => 0,
+            SystemVariant::DiscreteField => 1,
+            _ => todo!(),
+        }
     }
 }
 

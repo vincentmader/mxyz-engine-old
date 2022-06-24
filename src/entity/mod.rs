@@ -3,10 +3,20 @@ pub mod field;
 pub mod object;
 use crate::system::ToBytes;
 use attribute::*;
+// use serde::{Deserialize, Serialize};
 
 /// Entity Trait
 pub trait Entity:
-    EntityClone + Mass + Position + Velocity + Charge + Density + Force + ToBytes
+    EntityClone
+    // + Serialize
+    // + Deserialize
+    + Mass
+    + Position
+    + Velocity
+    + Charge
+    + Density
+    + Force
+    + ToBytes
 {
 }
 pub trait EntityClone {
