@@ -4,7 +4,7 @@ use mxyz_engine::state::preset::SimulationId;
 use mxyz_engine::Engine;
 mod dev_utils;
 
-const EXPORT_VARIANT: ExportVariant = ExportVariant::ToFile; //
+const EXPORT_VARIANT: ExportVariant = ExportVariant::ToDatabase;
 
 fn main() {
     /// Creates & Initializes Engine

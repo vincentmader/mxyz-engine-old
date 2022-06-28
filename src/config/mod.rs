@@ -9,6 +9,7 @@ pub struct EngineConfig {
     pub integrators: Vec<Vec<Integrator>>,
     pub constants: Constants,
     pub export_variant: ExportVariant,
+    pub last_export_step_id: Option<usize>,
 }
 impl EngineConfig {
     pub fn new() -> Self {
@@ -18,6 +19,7 @@ impl EngineConfig {
         let step_id = (0, usize::MAX);
         let constants = Constants::new();
         let export_variant = ExportVariant::ToDatabase;
+        let last_export_step_id = None;
         EngineConfig {
             // systems,
             // interactions,
@@ -25,6 +27,7 @@ impl EngineConfig {
             step_id,
             constants,
             export_variant,
+            last_export_step_id,
         }
     }
 }

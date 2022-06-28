@@ -5,7 +5,7 @@ use mxyz_universe::system::System;
 use preset::SimulationId;
 
 /// State
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct State {
     pub id: usize,
     pub systems: Vec<System>,
