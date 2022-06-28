@@ -47,83 +47,54 @@ impl Engine {
     }
 }
 
-// TODO move to separate module
+// TODO move to separate module (?)
 impl Engine {
-    /// Exports States to File
-    fn export_to_file(&self) {
-        use std::fs;
-        let contents: Vec<(usize, String)> = self
-            .states
+    fn get_unsaved_state_ids(&self) -> Vec<usize> {
+        self.states
             .iter()
             .filter(|state| {
-                // println!("{:?}", state.id);
                 state.id
                     >= match self.config.last_export_step_id {
                         None => 0,
-                        Some(e) => e + 1, // TODO might overflow (?)
+                        Some(e) => e + 1,
                     }
             })
-            .map(|state| (state.id, format!("{:#?}", state)))
-            .collect();
-        // println!("{:?}", contents);
-        for c in contents.iter() {
-            // println!("{:?}", c);
-            let sim_id = 0;
-            let path = format!("mxyz-engine/output/{}/{}.txt", sim_id, c.0);
-            fs::write(path, &c.1).unwrap();
-        }
-        // let mut contents = String::new();
-        // Get current state.
-        // for step_id in step_ids.iter() {
-        //     contents += &format!("STEP-ID: {}\n", step_id);
-        //     let state = self.states.get(*step_id).unwrap();
-        //     for system in state.systems.iter() {
-        //         contents += &format!("SYSTEM: {}\n", system.id);
-        //         for entity in system.entities.iter().enumerate() {
-        //             contents += &format!("ENTITY: {}\n", entity.0);
-        //             // TODO match outside of entity loop?
-        //             match system.variant {
-        //                 SystemVariant::DiscreteField => {}
-        //                 SystemVariant::PhysicalObjects => {
-        //                     contents += &format!(
-        //                         "{},{},{},{},{},{},{}\n",
-        //                         entity.1.get_mass(),
-        //                         entity.1.get_position()[0],
-        //                         entity.1.get_position()[1],
-        //                         entity.1.get_position()[2],
-        //                         entity.1.get_velocity()[0],
-        //                         entity.1.get_velocity()[1],
-        //                         entity.1.get_velocity()[2]
-        //                     );
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-        // let sim_id = 0;
-        // let path = format!("mxyz-engine/output/{}/output.txt", sim_id);
-        // fs::write(path, contents).unwrap();
+            .map(|state| state.id)
+            .collect()
     }
+    /// Exports States to File
+    fn export_to_file(&self) {
+        let sim_id = 0; // TODO
+        let out_dir = format!("./mxyz-engine/output/{}", sim_id);
+        /// Loops over unsaved States.
+        for state_id in self.get_unsaved_state_ids() {
+            let state = self.states.get(state_id).unwrap();
+            /// Saves to File
+            let path = format!("{}/{}.txt", out_dir, state_id);
+            std::fs::write(path, format!("{:#?}", state)).unwrap();
+        }
+    }
+    // TODO
     /// Exports States to Database
     fn export_to_database(&self) {
         /// Establishes Connection.
-        let _conn = mxyz_database::establish_connection();
-        /// Loops over States.
-        for state in self.states.iter().filter(|state| {
-            // - filter: only recently updated/new step-ids
-            true
-        }) {
+        let conn = mxyz_database::establish_connection();
+        /// Loops over unsaved States.
+        for state_id in self.get_unsaved_state_ids() {
+            let state = self.states.get(state_id).unwrap();
             /// Loops over Systems.
             for system in state.systems.iter() {
                 let _system_variant_id = System::get_variant_id(&system.variant);
-                /// Loops over Entities.
-                for entity in system.entities.iter() {
-                    todo!("save entity to database")
+                match system.variant {
+                    SystemVariant::PhysicalObjects => {
+                        /// Loops over Entities.
+                        for planet in system.entities.iter() {
+                            // mxyz_database::create_planet(&conn, planet);
+                        }
+                    }
+                    _ => {}
                 }
             }
-            // TODO save: up to which step-id has state-vec been written to db?
-
-            // TODO bincode state to bytestream
         }
     }
 }
