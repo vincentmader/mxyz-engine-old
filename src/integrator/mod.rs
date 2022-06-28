@@ -1,6 +1,6 @@
 use super::interaction::{Interaction, InteractionVariant};
 use crate::state::State;
-use crate::system::System;
+use mxyz_universe::system::System;
 
 const DT: f64 = 0.001; // TODO move else-where
 

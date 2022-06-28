@@ -1,4 +1,4 @@
-use crate::system::System;
+use mxyz_universe::system::System;
 
 /// Interaction "Vector"
 #[derive(Debug)]

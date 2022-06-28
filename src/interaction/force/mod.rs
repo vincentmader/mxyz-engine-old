@@ -1,4 +1,4 @@
-use crate::entity::Entity;
+use mxyz_universe::entity::Entity;
 
 // TODO move else-where
 const G: f64 = 1.; // Newton Gravity

@@ -1,7 +1,7 @@
 pub mod three_body_figure_eight;
 pub mod three_body_moon;
 use crate::config::EngineConfig;
-use crate::system::System;
+use mxyz_universe::system::System;
 
 pub enum SimulationId {
     ThreeBodyFigureEight,

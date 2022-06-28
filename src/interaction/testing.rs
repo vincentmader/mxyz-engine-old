@@ -1,6 +1,6 @@
 // use crate::entity::field::DiscreteFieldCell;
 // use crate::entity::object::PhysicalObject;
-use crate::entity::Entity as PhysicalObject;
+use mxyz_universe::entity::Entity as PhysicalObject;
 
 fn _coulomb(entity: &mut Box<dyn PhysicalObject>, other: &Box<dyn PhysicalObject>) {
     // parameters

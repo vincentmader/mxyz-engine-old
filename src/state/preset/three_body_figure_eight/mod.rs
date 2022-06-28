@@ -1,5 +1,5 @@
 use crate::config::EngineConfig;
-use crate::system::System;
+use mxyz_universe::system::System;
 // use crate::entity;
 // use crate::integrator::{Integrator, IntegratorVariant};
 // use crate::interaction::collision::Collision;

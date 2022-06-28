@@ -1,10 +1,10 @@
 use crate::config::EngineConfig;
-use crate::entity;
 use crate::integrator::{Integrator, IntegratorVariant};
 use crate::interaction::collision::Collision;
 use crate::interaction::force::{Force, ForceVariant};
 use crate::interaction::{Interaction, InteractionVariant};
-use crate::system::{System, SystemVariant};
+use mxyz_universe::entity;
+use mxyz_universe::system::{System, SystemVariant};
 
 const NR_OF_STEPS: usize = 2221;
 

@@ -2,8 +2,8 @@ use super::config::EngineConfig;
 use super::config::ExportVariant;
 use super::state::preset::SimulationId;
 use super::state::State;
-use super::system::System;
-use super::system::SystemVariant;
+use mxyz_universe::system::System;
+use mxyz_universe::system::SystemVariant;
 use std::fs;
 
 /// Simulation Engine

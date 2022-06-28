@@ -1,4 +1,4 @@
-use super::system::System;
+use mxyz_universe::system::System;
 
 /// Neighboorhood Variant (not used at all a.t.m.)
 pub enum _NeighbordhoodVariant {
@@ -17,7 +17,7 @@ pub trait Neighboorhood {
 
 mod world {
     use super::Neighboorhood;
-    use crate::system::System;
+    use mxyz_universe::system::System;
     /// World Neighboorhood (all entities)
     pub struct World {}
     impl Neighboorhood for World {
@@ -34,7 +34,7 @@ mod world {
 
 mod oct_tree {
     use super::Neighboorhood;
-    use crate::system::System;
+    use mxyz_universe::system::System;
     /// Oct-Tree Neighboorhood
     pub struct OctTree {
         // TODO fields?
@@ -53,7 +53,7 @@ mod oct_tree {
 
 mod sector {
     use super::Neighboorhood;
-    use crate::system::System;
+    use mxyz_universe::system::System;
     /// Sector Neighborhood
     pub struct Sectors {
         // TODO fields?
@@ -79,7 +79,7 @@ mod sector {
 
 mod random {
     use super::Neighboorhood;
-    use crate::system::System;
+    use mxyz_universe::system::System;
     use rand::Rng;
     /// Randomly Constructed Neighboorhood
     pub struct Random {
@@ -100,7 +100,7 @@ mod random {
 
 mod moore {
     use super::Neighboorhood;
-    use crate::system::System;
+    use mxyz_universe::system::System;
     /// Moore Neighboorhood for Cellular Automata
     pub struct Moore {}
     impl Neighboorhood for Moore {
@@ -122,7 +122,7 @@ mod moore {
 
 mod von_neumann {
     use super::Neighboorhood;
-    use crate::system::System;
+    use mxyz_universe::system::System;
     /// Von Neumann Neighboorhood for Cellular Automata
     pub struct VonNeumann {}
     impl Neighboorhood for VonNeumann {
