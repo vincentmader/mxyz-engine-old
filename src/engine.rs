@@ -29,11 +29,14 @@ impl Engine {
     /// Forwards Engine by 1 Time-Step
     pub fn step(&mut self) {
         let mut next = self.states[self.config.step_id.0].clone();
-        next.id = self.config.step_id.0 + 1; // TODO state id needed?
+        next.id = self.config.step_id.0 + 1; // state-id needed for RAM-clearing (?)
+
         next.step(&self.config, &self.states);
         self.states.push(next);
         self.config.step_id.0 += 1;
-        self.export(); // TODO don't do this every step
+        if self.config.step_id.0 % self.config.nr_of_steps_between_exports == 0 {
+            self.export();
+        }
     }
     /// Exports States (to File or Database)
     pub fn export(&mut self) {
