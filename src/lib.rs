@@ -11,6 +11,5 @@ pub mod integrator;
 pub mod interaction;
 pub mod neighborhood;
 pub mod state;
-// pub mod statistics;
 
 pub use engine::Engine;
