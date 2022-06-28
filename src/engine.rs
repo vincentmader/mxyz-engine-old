@@ -91,8 +91,19 @@ impl Engine {
                 match system.variant {
                     SystemVariant::PhysicalObjects => {
                         /// Loops over Entities.
-                        for planet in system.entities.iter() {
-                            // mxyz_database::create_planet(&conn, planet);
+                        for (planet_id, planet) in system.entities.iter().enumerate() {
+                            let db_planet = mxyz_database::models::NewPlanet {
+                                planet_id: &(planet_id as i32),
+                                system_id: &(system.id as i32),
+                                mass: &planet.get_mass(),
+                                pos_x: &planet.get_position()[0],
+                                pos_y: &planet.get_position()[1],
+                                pos_z: &planet.get_position()[2],
+                                vel_x: &planet.get_velocity()[0],
+                                vel_y: &planet.get_velocity()[1],
+                                vel_z: &planet.get_velocity()[2],
+                            };
+                            mxyz_database::create_planet(&conn, db_planet);
                         }
                     }
                     _ => {}
