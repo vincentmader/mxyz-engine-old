@@ -93,6 +93,7 @@ impl Engine {
                         /// Loops over Entities.
                         for (planet_id, planet) in system.entities.iter().enumerate() {
                             let db_planet = mxyz_database::models::NewPlanet {
+                                step_id: &(state_id as i32),
                                 planet_id: &(planet_id as i32),
                                 system_id: &(system.id as i32),
                                 mass: &planet.get_mass(),

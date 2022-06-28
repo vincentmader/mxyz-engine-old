@@ -6,7 +6,7 @@ use crate::interaction::{Interaction, InteractionVariant};
 use mxyz_universe::entity;
 use mxyz_universe::system::{System, SystemVariant};
 
-const NR_OF_STEPS: usize = 2221;
+const NR_OF_STEPS: usize = 10;
 
 pub fn preset(systems: &mut Vec<System>, config: &mut EngineConfig) {
     // I. SYSTEMS

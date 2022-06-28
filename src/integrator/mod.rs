@@ -2,7 +2,7 @@ use super::interaction::{Interaction, InteractionVariant};
 use crate::state::State;
 use mxyz_universe::system::System;
 
-const DT: f64 = 0.001; // TODO move else-where
+const DT: f64 = 0.1; // TODO move else-where
 
 #[derive(Debug)]
 /// Entity Integrator
@@ -93,28 +93,43 @@ fn euler_explicit(
     for entity_id in entity_ids {
         println!("\t\tENT-{}", entity_id);
         let entity = &mut system.entities[entity_id];
+
         let mut acceleration = [0., 0., 0.];
         /// Loops over the other systems
-        for other_id in other_ids.iter() {
-            let other = &state.systems[*other_id];
+        for other_sys_id in other_ids.iter() {
+            let other = &state.systems.get(*other_sys_id).unwrap();
             /// Loops over the Integrator's Interactions (skips if it doesn't apply)
             //  TODO get interactions to-apply outside of entity-loop
-            println!("\t\t\tOTHER-{}", other_id);
+            println!("\t\t\tOTHER-{}", other_sys_id);
             for interaction in interactions.iter() {
-                if interaction.matrix.entries[*other_id].unwrap() == false {
+                if interaction.matrix.entries[*other_sys_id].unwrap() == false {
                     continue;
                 }
                 println!("\t\t\t\t{:?}", interaction.variant);
                 /// Loops over the Entities in the interacting System
                 let other_ids = 0..other.entities.len(); // TODO get ids
                 for other_id in other_ids {
+                    let foo = (system.id, entity_id) == (*other_sys_id, other_id);
+                    if foo {
+                        continue; // TODO not working?
+                    }
                     let other = &other.entities[other_id];
                     /// Updates Velocity
                     match &interaction.variant {
                         InteractionVariant::Force(f) => {
                             let mass_1 = entity.get_mass(); // TODO move further up?
                             let force = f.calculate_from(entity, other);
-                            println!("\t\t\t\t\tENT-{}\t-> F = {:?}", other_id, force);
+                            println!(
+                                "\t\t\t\t\tENT-{}, pos:\t{:?}",
+                                entity_id,
+                                entity.get_position()
+                            );
+                            println!(
+                                "\t\t\t\t\t\t{:?} <-> {:?}",
+                                (system.id, entity_id),
+                                (other_sys_id, other_id)
+                            );
+                            println!("\t\t\t\t\t\t-> F = {:?}", force);
                             acceleration = [
                                 acceleration[0] + force[0] / mass_1 * DT,
                                 acceleration[1] + force[1] / mass_1 * DT,
@@ -126,7 +141,7 @@ fn euler_explicit(
                 }
             }
         }
-        /// Updates Position Vector
+        /// Updates Velocity Vector
         let velocity = entity.get_velocity();
         let velocity = [
             velocity[0] + acceleration[0] * DT,
@@ -134,6 +149,14 @@ fn euler_explicit(
             velocity[2] + acceleration[2] * DT,
         ];
         entity.set_velocity(&velocity);
+        /// Updates Position Vector
+        let position = entity.get_position();
+        let position = [
+            position[0] + velocity[0] * DT,
+            position[1] + velocity[1] * DT,
+            position[2] + velocity[2] * DT,
+        ];
+        entity.set_position(&position);
     }
 }
 
