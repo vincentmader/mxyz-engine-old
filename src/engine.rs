@@ -18,12 +18,14 @@ impl Engine {
     }
     /// Initializes State & Configuration
     pub fn init(&mut self, sim_id: &Option<SimulationId>) {
+        println!("Initializing Engine...");
         let mut initial_state = State::new();
         initial_state.init(sim_id, &mut self.config);
         self.states.push(initial_state);
     }
     /// Runs Engine
     pub fn run(&mut self) {
+        println!("Running Engine...");
         let _: Vec<()> = (0..self.config.step_id.1).map(|_| self.step()).collect();
     }
     /// Forwards Engine by 1 Time-Step
