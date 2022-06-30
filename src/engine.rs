@@ -191,9 +191,7 @@ impl Engine {
             .load::<Planet>(&connection)
             .expect("Error loading planets");
 
-        println!("planets:\n{:?}", planets);
-        // results.iter().map(|i| i.system_id as usize).collect()
-
+        println!("planets:\n{:?}", results);
         // planets
         vec![]
     }
@@ -201,7 +199,6 @@ impl Engine {
     pub fn get_updated_states(last_update: usize) -> Vec<State> {
         let current_state_id = std::cmp::max(1, Self::get_state_ids().len()) - 1;
         for state_id in last_update..current_state_id {
-            println!("aaaaaaaa {}", state_id);
             let system_ids = Self::get_system_ids(state_id);
             for system_id in system_ids.iter() {
                 let entities = Self::get_entities(state_id, *system_id);
