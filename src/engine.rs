@@ -4,58 +4,69 @@ use super::state::State;
 use mxyz_universe::entity::attribute::Mass;
 use mxyz_universe::entity::attribute::Position;
 use mxyz_universe::entity::attribute::Velocity;
-use mxyz_universe::system::System;
 use mxyz_universe::system::SystemVariant;
 
-/// Simulation Engine
+/// MXYZ Simulation Engine
 pub struct Engine {
     pub config: EngineConfig,
     pub states: Vec<State>,
 }
+
 impl Engine {
-    /// Creates a new instance of Engine Structure
+    /// Creates a new engine instance
     pub fn new() -> Engine {
         let config = EngineConfig::new();
         let states = vec![];
         Engine { config, states }
     }
-    /// Initializes State & Configuration
+
+    /// Initializes state & config
     pub fn init(&mut self, sim_id: &Option<SimulationId>) {
-        println!("Initializing Engine...");
+        println!("MXYZ-Engine: Initializing...");
         let mut initial_state = State::new();
         initial_state.init(sim_id, &mut self.config);
         self.states.push(initial_state);
     }
-    /// Runs Engine
-    pub fn run(&mut self) {
-        println!("Running Engine...");
-        let _: Vec<()> = (0..self.config.step_id.1).map(|_| self.step()).collect();
-    }
-    /// Forwards Engine by 1 Time-Step
-    pub fn step(&mut self) {
-        let current_state = &self.states[self.config.step_id.0];
 
+    /// Runs engine
+    pub fn run(&mut self) {
+        println!("MXYZ-Engine: Running...");
+        for _ in 0..self.config.step_id.1 {
+            self.step();
+        }
+    }
+
+    /// Forwards engine by one time-step
+    pub fn step(&mut self) {
+        // Load current state.
+        let current_state = &self.states[self.config.step_id.0];
+        // Forward state to next time-step.
         let next = current_state.next(&self.config, &self.states);
         self.states.push(next);
         self.config.step_id.0 += 1;
-
+        // Export states every few time-steps.
         if self.config.step_id.0 % self.config.nr_of_steps_between_exports == 0 {
             self.export();
         }
     }
+
     /// Exports States (to File or Database)
     pub fn export(&mut self) {
         use super::config::ExportVariant;
-        println!("Exporting...");
+        println!("MXYZ-Engine: Exporting...");
+        // Choose export method.
         match self.config.export_variant {
             ExportVariant::ToFile => self.export_to_file(),
             ExportVariant::ToDatabase => self.export_to_database(),
         }
+        // Update step-id of last export.
         self.config.last_export_step_id = Some(self.config.step_id.0);
     }
 }
 
+// ============================================================================
 // TODO move to separate module (?)
+
 impl Engine {
     fn get_unsaved_state_ids(&self) -> Vec<usize> {
         self.states
@@ -70,6 +81,7 @@ impl Engine {
             .map(|state| state.id)
             .collect()
     }
+
     /// Exports States to File
     fn export_to_file(&self) {
         let sim_id = 0; // TODO
@@ -82,6 +94,7 @@ impl Engine {
             std::fs::write(path, format!("{:#?}", state)).unwrap();
         }
     }
+
     // TODO
     /// Exports States to Database
     fn export_to_database(&self) {
