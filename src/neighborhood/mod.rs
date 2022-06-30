@@ -1,13 +1,17 @@
 use mxyz_universe::system::System;
 
+pub struct _Neighboorhood {
+    variant: NeighborhoodVariant,
+}
+
 /// Neighboorhood Variant (not used at all a.t.m.)
-pub enum _NeighbordhoodVariant {
-    World,
-    OctTree,
-    Sectors,
-    Random,
-    Moore,
-    VonNeumann,
+pub enum NeighborhoodVariant {
+    World(world::World),
+    OctTree(oct_tree::OctTree),
+    Sectors(sectors::Sectors),
+    Random(random::Random),
+    Moore(moore::Moore),
+    VonNeumann(von_neumann::VonNeumann),
 }
 
 /// Neighbordhood Trait
@@ -18,11 +22,14 @@ pub trait Neighboorhood {
 mod world {
     use super::Neighboorhood;
     use mxyz_universe::system::System;
+    use mxyz_universe::system::SystemVariant;
     /// World Neighboorhood (all entities)
     pub struct World {}
     impl Neighboorhood for World {
         fn for_entity(&self, _entity: (usize, usize), system: System) -> Vec<usize> {
-            (0..system.entities.len()).collect()
+            match system.variant {
+                SystemVariant::Planets(system) => (0..system.entities.len()).collect(),
+            }
         }
     }
     impl World {
@@ -51,18 +58,22 @@ mod oct_tree {
     }
 }
 
-mod sector {
+mod sectors {
     use super::Neighboorhood;
     use mxyz_universe::system::System;
+    use mxyz_universe::system::SystemVariant;
     /// Sector Neighborhood
     pub struct Sectors {
         // TODO fields?
     }
     impl Neighboorhood for Sectors {
         fn for_entity(&self, entity: (usize, usize), system: System) -> Vec<usize> {
-            (0..system.entities.len())
-                .filter(|id| is_in_same_sector(entity, (system.id, *id)))
-                .collect()
+            let system_id = system.system_id;
+            match system.variant {
+                SystemVariant::Planets(system) => (0..system.entities.len())
+                    .filter(|id| is_in_same_sector(entity, (system_id, *id)))
+                    .collect(),
+            }
         }
     }
     impl Sectors {

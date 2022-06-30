@@ -23,7 +23,13 @@ impl Force {
     pub fn new(variant: ForceVariant) -> Self {
         Force { variant }
     }
-    pub fn calculate_from(&self, entity: &Box<dyn Entity>, other: &Box<dyn Entity>) -> [f64; 3] {
+    pub fn calculate_from<T: Entity, O: Entity>(
+        &self,
+        // entity: &Box<dyn Entity>,
+        // other: &Box<dyn Entity>,
+        entity: &T,
+        other: &O,
+    ) -> [f64; 3] {
         // TODO move match up? (not needed for every entity, is it?)
         let force = match self.variant {
             ForceVariant::NewtonianGravity => {

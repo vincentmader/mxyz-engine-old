@@ -1,6 +1,9 @@
 use super::config::EngineConfig;
 use super::state::preset::SimulationId;
 use super::state::State;
+use mxyz_universe::entity::attribute::Mass;
+use mxyz_universe::entity::attribute::Position;
+use mxyz_universe::entity::attribute::Velocity;
 use mxyz_universe::system::System;
 use mxyz_universe::system::SystemVariant;
 
@@ -89,15 +92,16 @@ impl Engine {
             let state = self.states.get(state_id).unwrap();
             /// Loops over Systems.
             for system in state.systems.iter() {
-                let _system_variant_id = System::get_variant_id(&system.variant);
-                match system.variant {
-                    SystemVariant::PhysicalObjects => {
+                // let _system_variant_id = System::get_variant_id(&system.variant);
+                let system_id = system.system_id;
+                match &system.variant {
+                    SystemVariant::Planets(system) => {
                         /// Loops over Entities.
                         for (planet_id, planet) in system.entities.iter().enumerate() {
                             let db_planet = mxyz_database::models::NewPlanet {
                                 step_id: &(state_id as i32),
                                 planet_id: &(planet_id as i32),
-                                system_id: &(system.id as i32),
+                                system_id: &(system_id as i32),
                                 mass: &planet.get_mass(),
                                 pos_x: &planet.get_position()[0],
                                 pos_y: &planet.get_position()[1],

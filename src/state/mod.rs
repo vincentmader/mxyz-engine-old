@@ -32,18 +32,17 @@ impl State {
         let _neighborhoods = tmp::prepare_neighborhoods(); // TODO get relevant neighbors/nodes
         /// Prepares system-ids   TODO remove maybe?
         for (id, sys) in self.systems.iter_mut().enumerate() {
-            sys.id = id; // needed e.g. when removing/adding systems
+            sys.system_id = id; // needed e.g. when removing/adding systems TODO make this better
         }
         /// Loops over all Systems
         for system in self.systems.iter_mut() {
             println!(
-                "SYS-{}: {:?} ({} entities)",
-                system.id,
-                system.variant,
-                system.entities.len()
+                "SYS-{}: {:?})",
+                system.system_id,
+                system.variant, //system.nr_of_entities
             );
 
-            let system_id = system.id; // TODO some-day, remove (with trees)
+            let system_id = system.system_id; // TODO some-day, remove (with trees)
             /// Gets all Integrators for this System
             let integrators = tmp::get_integrators(system_id, &config).unwrap();
             /// Loops over all Integrators

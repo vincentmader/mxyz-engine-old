@@ -1,22 +1,25 @@
 #![allow(unreachable_patterns)]
 
+use mxyz_universe::entity::attribute::Position;
+use mxyz_universe::system::SystemVariant;
+
 pub fn _print_state(engine: &mxyz_engine::Engine) {
     let state = &engine.states[engine.config.step_id.0];
     println!("\n  Steps: {}", engine.config.step_id.0);
     for system in state.systems.iter() {
-        match system.variant {
-            mxyz_universe::system::SystemVariant::PhysicalObjects => {
+        match &system.variant {
+            SystemVariant::Planets(system) => {
                 println!("objects");
                 for e in system.entities.iter() {
                     println!("    {:?}", e.get_position());
                 }
             }
-            mxyz_universe::system::SystemVariant::DiscreteField => {
-                println!("field");
-                for e in system.entities.iter() {
-                    println!("    {:?}", e.get_position()); // TODO
-                }
-            }
+            // mxyz_universe::system::SystemVariant::DiscreteField => {
+            //     println!("field");
+            //     for e in system.entities.iter() {
+            //         println!("    {:?}", e.get_position()); // TODO
+            //     }
+            // }
             _ => todo!(),
         }
     }
