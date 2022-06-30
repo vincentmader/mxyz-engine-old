@@ -3,8 +3,6 @@ pub mod tmp;
 use super::config::EngineConfig;
 use mxyz_universe::system::System;
 use preset::SimulationId;
-// use serde::{Deserialize, Serialize};
-// #[derive(Deserialize, Serialize, Clone, Debug)]
 
 /// State
 #[derive(Debug, Clone)]
@@ -24,34 +22,28 @@ impl State {
         self.systems = preset::initialize(&sim_id, config);
     }
     /// Forwards State
-    pub fn step(&mut self, config: &EngineConfig, states: &Vec<State>) {
-        println!("\n--------\n {}.\n--------\n", config.step_id.0);
+    pub fn next(&self, config: &EngineConfig, states: &Vec<State>) -> State {
         /// Loads current State
-        let state = &states[config.step_id.0];
+        let current_state = &states[config.step_id.0];
         /// Creates "neighborhoods"
         let _neighborhoods = tmp::prepare_neighborhoods(); // TODO get relevant neighbors/nodes
-        /// Prepares system-ids   TODO remove maybe?
-        for (id, sys) in self.systems.iter_mut().enumerate() {
-            sys.system_id = id; // needed e.g. when removing/adding systems TODO make this better
-        }
-        /// Loops over all Systems
-        for system in self.systems.iter_mut() {
-            println!(
-                "SYS-{}: {:?})",
-                system.system_id,
-                system.variant, //system.nr_of_entities
-            );
 
-            let system_id = system.system_id; // TODO some-day, remove (with trees)
-            /// Gets all Integrators for this System
+        /// Updates State by looping over Systems & updating each of them
+        let mut next_state = State::new();
+        for system in &current_state.systems {
+            let system_id = system.system_id;
+            let mut next_system = system.clone();
+
+            /// Gets all Integrators for this System & loops over them
             let integrators = tmp::get_integrators(system_id, &config).unwrap();
-            /// Loops over all Integrators
             for integrator in integrators {
                 /// Gets all Interacting Systems for this Interaction
-                let other_ids = tmp::get_other_ids(&integrator, &state);
+                let other_ids = tmp::get_other_ids(&integrator, &current_state);
                 /// Applies Interaction
-                integrator.step(system, &state, &other_ids);
+                integrator.step(&mut next_system, &current_state, &other_ids);
             }
+            next_state.systems.push(next_system);
         }
+        next_state
     }
 }

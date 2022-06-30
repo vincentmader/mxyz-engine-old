@@ -94,7 +94,11 @@ fn euler_explicit(
     interactions: &Vec<Interaction>,
 ) {
     let system_id = system.system_id;
+
+    // let entities = match &mut system.variant{}
+
     match &mut system.variant {
+        SystemVariant::PhysicalObjects(system) => {}
         SystemVariant::Planets(system) => {
             let entity_ids = 0..system.entities.len(); // TODO only update some?
             for entity_id in entity_ids {
@@ -105,8 +109,10 @@ fn euler_explicit(
                 /// Loops over the other systems
                 for other_sys_id in other_ids.iter() {
                     let other = &state.systems.get(*other_sys_id).unwrap();
+                    let foo = vec![]; // TODO remove
                     let other_entities = match &other.variant {
                         SystemVariant::Planets(system) => &system.entities, // TODO get from neighborhood
+                        SystemVariant::PhysicalObjects(system) => &foo, // TODO get from neighborhood
                     };
                     /// Loops over the Integrator's Interactions (skips if it doesn't apply)
                     //  TODO get interactions to-apply outside of entity-loop
