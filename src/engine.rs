@@ -4,6 +4,7 @@ use super::state::State;
 use mxyz_universe::entity::attribute::Mass;
 use mxyz_universe::entity::attribute::Position;
 use mxyz_universe::entity::attribute::Velocity;
+use mxyz_universe::entity::object::planet::Planet;
 use mxyz_universe::system::SystemVariant;
 
 /// MXYZ Simulation Engine
@@ -69,17 +70,21 @@ impl Engine {
 
 impl Engine {
     fn get_unsaved_state_ids(&self) -> Vec<usize> {
-        self.states
+        let a = self
+            .states
             .iter()
             .filter(|state| {
-                state.id
+                state.state_id
                     >= match self.config.last_export_step_id {
                         None => 0,
                         Some(e) => e + 1,
                     }
             })
-            .map(|state| state.id)
-            .collect()
+            .map(|state| state.state_id)
+            .collect();
+
+        println!("bbb: {:?}", a);
+        a
     }
 
     /// Exports States to File
@@ -102,6 +107,7 @@ impl Engine {
         let conn = mxyz_database::establish_connection();
         /// Loops over unsaved States.
         for state_id in self.get_unsaved_state_ids() {
+            println!("{}", state_id);
             let state = self.states.get(state_id).unwrap();
             /// Loops over Systems.
             for system in state.systems.iter() {
@@ -112,7 +118,7 @@ impl Engine {
                         /// Loops over Entities.
                         for (planet_id, planet) in system.entities.iter().enumerate() {
                             let db_planet = mxyz_database::models::NewPlanet {
-                                step_id: &(state_id as i32),
+                                state_id: &(state_id as i32),
                                 planet_id: &(planet_id as i32),
                                 system_id: &(system_id as i32),
                                 mass: &planet.get_mass(),
@@ -128,13 +134,40 @@ impl Engine {
                     }
                     _ => {}
                 }
+                let entity_variant_id = match &system.variant {
+                    SystemVariant::Planets(_) => 0,
+                    SystemVariant::PhysicalObjects(_) => 1,
+                };
+                let db_system = mxyz_database::models::NewSystem {
+                    state_id: &(state_id as i32),
+                    system_id: &(system_id as i32),
+                    entity_variant_id: &(entity_variant_id as i32),
+                };
+                mxyz_database::create_system(&conn, db_system);
             }
+            let db_state = mxyz_database::models::NewState {
+                state_id: &(state_id as i32),
+            };
+            mxyz_database::create_state(&conn, db_state);
         }
     }
-    pub fn get_system_ids(&self, state_id_query: usize) -> Vec<usize> {
+
+    pub fn get_state_ids() -> Vec<usize> {
         use diesel::prelude::*;
-        use mxyz_database::models::{NewSystem, System};
+        use mxyz_database::models::State;
         // use mxyz_database::schema::systems;
+        use mxyz_database::schema::states::dsl::*;
+        /// Establishes Connection.
+        let connection = mxyz_database::establish_connection();
+        let results = states
+            .load::<State>(&connection)
+            .expect("Error loading states");
+        results.iter().map(|i| i.state_id as usize).collect()
+    }
+
+    pub fn get_system_ids(state_id_query: usize) -> Vec<usize> {
+        use diesel::prelude::*;
+        use mxyz_database::models::System;
         use mxyz_database::schema::systems::dsl::*;
         /// Establishes Connection.
         let connection = mxyz_database::establish_connection();
@@ -144,27 +177,34 @@ impl Engine {
             .expect("Error loading systems");
         results.iter().map(|i| i.system_id as usize).collect()
     }
-    pub fn get_entities(&self, state_id_query: usize, system_id_query: i32) -> Vec<usize> {
+
+    pub fn get_entities(state_id_query: usize, system_id_query: usize) -> Vec<Planet> {
         use diesel::prelude::*;
-        use mxyz_database::models::{NewSystem, System};
-        // use mxyz_database::schema::systems;
-        use mxyz_database::schema::systems::dsl::*;
+        use mxyz_database::models::Planet;
+        use mxyz_database::schema::planets::dsl::*;
         /// Establishes Connection.
         let connection = mxyz_database::establish_connection();
 
-        // let results = systems
-        //     .filter(state_id.eq(state_id_query as i32))
-        //     .load::<System>(&connection)
-        //     .expect("Error loading systems");
+        let results = planets
+            .filter(state_id.eq(state_id_query as i32))
+            .filter(system_id.eq(system_id_query as i32))
+            .load::<Planet>(&connection)
+            .expect("Error loading planets");
+
+        println!("planets:\n{:?}", planets);
         // results.iter().map(|i| i.system_id as usize).collect()
 
+        // planets
         vec![]
     }
-    pub fn get_update_states(self, last_update: usize) -> Vec<State> {
-        for state_id in last_update..self.config.step_id.0 {
-            let system_ids = &self.get_system_ids(state_id);
-            for system_id in system_ids {
-                let entities = &self.get_entities(state_id, system_id);
+
+    pub fn get_updated_states(last_update: usize) -> Vec<State> {
+        let current_state_id = std::cmp::max(1, Self::get_state_ids().len()) - 1;
+        for state_id in last_update..current_state_id {
+            println!("aaaaaaaa {}", state_id);
+            let system_ids = Self::get_system_ids(state_id);
+            for system_id in system_ids.iter() {
+                let entities = Self::get_entities(state_id, *system_id);
             }
         }
 

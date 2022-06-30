@@ -7,15 +7,15 @@ use preset::SimulationId;
 /// State
 #[derive(Debug, Clone)]
 pub struct State {
-    pub id: usize,
+    pub state_id: usize,
     pub systems: Vec<System>,
 }
 impl State {
     /// Creates new instance of State Structure
     pub fn new() -> Self {
-        let id = 0;
+        let state_id = 0;
         let systems = vec![];
-        State { id, systems }
+        State { state_id, systems }
     }
 
     /// Initializes State & configuration
@@ -26,6 +26,7 @@ impl State {
     /// Forwards State
     pub fn next(&self, config: &EngineConfig, states: &Vec<State>) -> State {
         let mut next_state = State::new();
+        next_state.state_id = self.state_id + 1;
 
         /// Loads current State
         let current_state = &states[config.step_id.0];
