@@ -131,4 +131,44 @@ impl Engine {
             }
         }
     }
+    pub fn get_system_ids(&self, state_id_query: usize) -> Vec<usize> {
+        use diesel::prelude::*;
+        use mxyz_database::models::{NewSystem, System};
+        // use mxyz_database::schema::systems;
+        use mxyz_database::schema::systems::dsl::*;
+        /// Establishes Connection.
+        let connection = mxyz_database::establish_connection();
+        let results = systems
+            .filter(state_id.eq(state_id_query as i32))
+            .load::<System>(&connection)
+            .expect("Error loading systems");
+        results.iter().map(|i| i.system_id as usize).collect()
+    }
+    pub fn get_entities(&self, state_id_query: usize, system_id_query: i32) -> Vec<usize> {
+        use diesel::prelude::*;
+        use mxyz_database::models::{NewSystem, System};
+        // use mxyz_database::schema::systems;
+        use mxyz_database::schema::systems::dsl::*;
+        /// Establishes Connection.
+        let connection = mxyz_database::establish_connection();
+
+        // let results = systems
+        //     .filter(state_id.eq(state_id_query as i32))
+        //     .load::<System>(&connection)
+        //     .expect("Error loading systems");
+        // results.iter().map(|i| i.system_id as usize).collect()
+
+        vec![]
+    }
+    pub fn get_update_states(self, last_update: usize) -> Vec<State> {
+        for state_id in last_update..self.config.step_id.0 {
+            let system_ids = &self.get_system_ids(state_id);
+            for system_id in system_ids {
+                let entities = &self.get_entities(state_id, system_id);
+            }
+        }
+
+        let states = vec![];
+        states
+    }
 }
