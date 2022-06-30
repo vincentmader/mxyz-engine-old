@@ -3,9 +3,10 @@ pub mod tmp;
 use super::config::EngineConfig;
 use mxyz_universe::system::System;
 use preset::SimulationId;
+use serde::{Deserialize, Serialize};
 
 /// State
-#[derive(Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct State {
     pub state_id: usize,
     pub systems: Vec<System>,
