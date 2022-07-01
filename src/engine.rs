@@ -137,6 +137,7 @@ impl Engine {
                 let entity_variant_id = match &system.variant {
                     SystemVariant::Planets(_) => 0,
                     SystemVariant::PhysicalObjects(_) => 1,
+                    _ => todo!(),
                 };
                 let db_system = mxyz_database::models::NewSystem {
                     state_id: &(state_id as i32),
@@ -201,7 +202,7 @@ impl Engine {
         for state_id in last_update..current_state_id {
             let system_ids = Self::get_system_ids(state_id);
             for system_id in system_ids.iter() {
-                let entities = Self::get_entities(state_id, *system_id);
+                let _entities = Self::get_entities(state_id, *system_id);
             }
         }
 

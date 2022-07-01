@@ -1,3 +1,5 @@
+#![allow(unreachable_patterns)]
+
 pub mod three_body_figure_eight;
 pub mod three_body_moon;
 use crate::config::EngineConfig;

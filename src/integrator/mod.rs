@@ -98,7 +98,7 @@ fn euler_explicit(
     // let entities = match &mut system.variant{}
 
     match &mut system.variant {
-        SystemVariant::PhysicalObjects(system) => {}
+        SystemVariant::PhysicalObjects(_system) => {}
         SystemVariant::Planets(system) => {
             let entity_ids = 0..system.entities.len(); // TODO only update some?
             for entity_id in entity_ids {
@@ -112,7 +112,8 @@ fn euler_explicit(
                     let foo = vec![]; // TODO remove
                     let other_entities = match &other.variant {
                         SystemVariant::Planets(system) => &system.entities, // TODO get from neighborhood
-                        SystemVariant::PhysicalObjects(system) => &foo, // TODO get from neighborhood
+                        SystemVariant::PhysicalObjects(_system) => &foo, // TODO get from neighborhood
+                        _ => todo!(),
                     };
                     /// Loops over the Integrator's Interactions (skips if it doesn't apply)
                     //  TODO get interactions to-apply outside of entity-loop
@@ -175,6 +176,7 @@ fn euler_explicit(
                 entity.set_position(&position);
             }
         }
+        _ => todo!(),
     }
 }
 

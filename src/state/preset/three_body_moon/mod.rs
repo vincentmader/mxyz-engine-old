@@ -1,6 +1,5 @@
 use crate::config::EngineConfig;
 use crate::integrator::{Integrator, IntegratorVariant};
-use crate::interaction::collision::Collision;
 use crate::interaction::force::{Force, ForceVariant};
 use crate::interaction::{Interaction, InteractionVariant};
 use mxyz_universe::entity;
@@ -27,7 +26,7 @@ pub fn preset(systems: &mut Vec<System>, config: &mut EngineConfig) {
         system.entities.push(entity);
     }
     let variant = SystemVariant::Planets(system);
-    let mut system = System::new(system_id, variant);
+    let system = System::new(system_id, variant);
     systems.push(system);
 
     // III.INTEGRATORS
