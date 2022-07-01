@@ -6,19 +6,29 @@ use mxyz_universe::entity::attribute::Position;
 use mxyz_universe::entity::attribute::Velocity;
 use mxyz_universe::entity::object::planet::Planet;
 use mxyz_universe::system::SystemVariant;
+use std::sync::mpsc;
+
+type M = usize; // TODO
 
 /// MXYZ Simulation Engine
 pub struct Engine {
     pub config: EngineConfig,
     pub states: Vec<State>,
+    tx: mpsc::Sender<M>,
+    rx: mpsc::Receiver<M>,
 }
 
 impl Engine {
     /// Creates a new engine instance
-    pub fn new() -> Engine {
+    pub fn new(rx: mpsc::Receiver<M>, tx: mpsc::Sender<M>) -> Self {
         let config = EngineConfig::new();
         let states = vec![];
-        Engine { config, states }
+        Engine {
+            config,
+            states,
+            rx,
+            tx,
+        }
     }
 
     /// Initializes state & config
@@ -50,6 +60,10 @@ impl Engine {
             self.export();
         }
     }
+
+    pub fn send(&self) {}
+
+    pub fn receive(&self) {}
 
     /// Exports States (to File or Database)
     pub fn export(&mut self) {

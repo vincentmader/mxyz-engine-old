@@ -2,13 +2,16 @@
 use mxyz_engine::config::ExportVariant;
 use mxyz_engine::state::preset::SimulationId;
 use mxyz_engine::Engine;
+use std::sync::mpsc;
 mod dev_utils;
 
 const EXPORT_VARIANT: ExportVariant = ExportVariant::ToDatabase;
 
 fn main() {
+    let (tx, rx) = mpsc::channel();
+
     /// Creates & Initializes Engine
-    let mut engine = Engine::new();
+    let mut engine = Engine::new(rx, tx);
     engine.init(&Some(SimulationId::ThreeBodyMoon));
     engine.config.export_variant = EXPORT_VARIANT;
 
