@@ -17,7 +17,7 @@ impl InteractionVector {
     }
     // TODO auto-add/rm rows/cells on system-add/rm
     // TODO run tests for matrix on system-delete
-    // TODO run test for all sim_ids (initialization)
+    // TODO run test for all simulation_variants (initialization)
 }
 
 // /// Interaction Matrix
@@ -39,7 +39,7 @@ impl InteractionVector {
 //     }
 //     // TODO auto-add/rm rows/cells on system-add/rm
 //     // TODO run tests for matrix on system-delete
-//     // TODO run test for all sim_ids (initialization)
+//     // TODO run test for all simulation_variants (initialization)
 // }
 
 // #[derive(Debug)]

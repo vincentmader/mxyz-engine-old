@@ -1,5 +1,5 @@
 use super::config::EngineConfig;
-use super::state::preset::SimulationId;
+use super::state::preset::SimulationVariant;
 use super::state::State;
 use mxyz_universe::entity::attribute::Mass;
 use mxyz_universe::entity::attribute::Position;
@@ -32,10 +32,10 @@ impl Engine {
     }
 
     /// Initializes state & config
-    pub fn init(&mut self, sim_id: &Option<SimulationId>) {
+    pub fn init(&mut self, simulation_variant: &Option<SimulationVariant>) {
         println!("MXYZ-Engine: Initializing...");
         let mut initial_state = State::new();
-        initial_state.init(sim_id, &mut self.config);
+        initial_state.init(simulation_variant, &mut self.config);
         self.states.push(initial_state);
     }
 
@@ -103,8 +103,8 @@ impl Engine {
 
     /// Exports States to File
     fn export_to_file(&self) {
-        let sim_id = 0; // TODO
-        let out_dir = format!("./mxyz-engine/output/{}", sim_id);
+        let simulation_variant = 0; // TODO
+        let out_dir = format!("./mxyz-engine/output/{}", simulation_variant);
         /// Loops over unsaved States.
         for state_id in self.get_unsaved_state_ids() {
             let state = self.states.get(state_id).unwrap();

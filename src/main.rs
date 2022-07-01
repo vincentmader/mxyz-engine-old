@@ -1,6 +1,6 @@
 #![allow(unused_doc_comments)]
 use mxyz_engine::config::ExportVariant;
-use mxyz_engine::state::preset::SimulationId;
+use mxyz_engine::state::preset::SimulationVariant;
 use mxyz_engine::Engine;
 use std::sync::mpsc;
 mod dev_utils;
@@ -12,7 +12,7 @@ fn main() {
 
     /// Creates & Initializes Engine
     let mut engine = Engine::new(rx, tx);
-    engine.init(&Some(SimulationId::ThreeBodyMoon));
+    engine.init(&Some(SimulationVariant::ThreeBodyMoon));
     engine.config.export_variant = EXPORT_VARIANT;
 
     /// Runs Engine & Records Execution Time

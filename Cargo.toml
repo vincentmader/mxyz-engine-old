@@ -10,6 +10,7 @@
     mxyz-universe = { path="../mxyz-universe" }
     mxyz-utils = { path="../mxyz-utils" }
     rand = "0.8.5"
+    # getrandom = "0.2.7"
     diesel = "1.4.8"
 
 [dependencies.serde]

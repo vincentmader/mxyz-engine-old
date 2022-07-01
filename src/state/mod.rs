@@ -2,7 +2,7 @@ pub mod preset;
 pub mod tmp;
 use super::config::EngineConfig;
 use mxyz_universe::system::System;
-use preset::SimulationId;
+use preset::SimulationVariant;
 use serde::{Deserialize, Serialize};
 
 /// State
@@ -20,8 +20,12 @@ impl State {
     }
 
     /// Initializes State & configuration
-    pub fn init(&mut self, sim_id: &Option<SimulationId>, config: &mut EngineConfig) {
-        self.systems = preset::initialize(&sim_id, config);
+    pub fn init(
+        &mut self,
+        simulation_variant: &Option<SimulationVariant>,
+        config: &mut EngineConfig,
+    ) {
+        self.systems = preset::initialize(&simulation_variant, config);
     }
 
     /// Forwards State
