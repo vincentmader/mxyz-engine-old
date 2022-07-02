@@ -5,6 +5,7 @@ pub mod three_body_moon;
 use crate::config::EngineConfig;
 use mxyz_universe::system::System;
 
+#[derive(Debug)]
 pub enum SimulationVariant {
     // Undefined, // TODO
     ThreeBodyFigureEight,
