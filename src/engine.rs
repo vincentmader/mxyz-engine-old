@@ -1,10 +1,10 @@
 use super::config::EngineConfig;
-use super::state::preset::SimulationVariant;
 use super::state::State;
 use mxyz_universe::entity::attribute::Mass;
 use mxyz_universe::entity::attribute::Position;
 use mxyz_universe::entity::attribute::Velocity;
 use mxyz_universe::entity::object::planet::Planet;
+use mxyz_universe::preset::SimulationVariant;
 use mxyz_universe::system::SystemVariant;
 use std::sync::mpsc;
 

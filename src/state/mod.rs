@@ -1,8 +1,8 @@
 pub mod preset;
 pub mod tmp;
 use super::config::EngineConfig;
+use mxyz_universe::preset::SimulationVariant;
 use mxyz_universe::system::System;
-use preset::SimulationVariant;
 use serde::{Deserialize, Serialize};
 
 /// State
