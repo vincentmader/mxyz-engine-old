@@ -40,7 +40,7 @@ impl Integrator {
         }
     }
     pub fn step(&self, system: &mut System, state: &State, other_ids: &Vec<usize>) {
-        println!("\t{:#?}: {:?}", self.variant, other_ids);
+        // ! println!("\t{:#?}: {:?}", self.variant, other_ids);
         let stepper = match self.variant {
             IntegratorVariant::EulerExplicit => euler_explicit,
             IntegratorVariant::CellularAutomaton => cellular_automaton,
@@ -102,7 +102,7 @@ fn euler_explicit(
         SystemVariant::Planets(system) => {
             let entity_ids = 0..system.entities.len(); // TODO only update some?
             for entity_id in entity_ids {
-                println!("\t\tENT-{}", entity_id);
+                // ! println!("\t\tENT-{}", entity_id);
                 let entity = &mut system.entities[entity_id];
 
                 let mut acceleration = [0., 0., 0.];
@@ -115,12 +115,12 @@ fn euler_explicit(
                     };
                     /// Loops over the Integrator's Interactions (skips if it doesn't apply)
                     //  TODO get interactions to-apply outside of entity-loop (?)
-                    println!("\t\t\tOTHER-{}", other_sys_id);
+                    // ! println!("\t\t\tOTHER-{}", other_sys_id);
                     for interaction in interactions.iter() {
                         if interaction.matrix.entries[*other_sys_id].unwrap() == false {
                             continue;
                         }
-                        println!("\t\t\t\t{:?}", interaction.variant);
+                        // ! println!("\t\t\t\t{:?}", interaction.variant);
                         /// Loops over the Entities in the interacting System
                         let other_ids = 0..other_entities.len(); // TODO get ids
                         for other_id in other_ids {
@@ -134,17 +134,17 @@ fn euler_explicit(
                                 InteractionVariant::Force(f) => {
                                     let mass_1 = entity.get_mass(); // TODO move further up?
                                     let force = f.calculate_from(entity, other);
-                                    println!(
-                                        "\t\t\t\t\tENT-{}, pos:\t{:?}",
-                                        entity_id,
-                                        entity.get_position()
-                                    );
-                                    println!(
-                                        "\t\t\t\t\t\t{:?} <-> {:?}",
-                                        (system_id, entity_id),
-                                        (other_sys_id, other_id)
-                                    );
-                                    println!("\t\t\t\t\t\t-> F = {:?}", force);
+                                    // ! println!(
+                                    // !     "\t\t\t\t\tENT-{}, pos:\t{:?}",
+                                    // !     entity_id,
+                                    // !     entity.get_position()
+                                    // ! );
+                                    // ! println!(
+                                    // !     "\t\t\t\t\t\t{:?} <-> {:?}",
+                                    // !     (system_id, entity_id),
+                                    // !     (other_sys_id, other_id)
+                                    // ! );
+                                    // ! println!("\t\t\t\t\t\t-> F = {:?}", force);
                                     acceleration = [
                                         acceleration[0] + force[0] / mass_1 * DT,
                                         acceleration[1] + force[1] / mass_1 * DT,
