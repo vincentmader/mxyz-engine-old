@@ -1,9 +1,10 @@
 pub mod system;
 use super::integrator::Integrator;
-// pub use system::SystemConfig;
+use mxyz_universe::preset::SimulationVariant;
 
 pub struct EngineConfig {
     pub step_id: (usize, usize),
+    pub simulation_variant: Option<SimulationVariant>,
     // pub systems: Vec<SystemConfig>,
     // pub interactions: Vec<Interaction>,
     pub integrators: Vec<Vec<Integrator>>,
@@ -21,7 +22,8 @@ impl EngineConfig {
         let constants = Constants::new();
         let export_variant = ExportVariant::ToDatabase;
         let last_export_step_id = None;
-        let nr_of_steps_between_exports = 10;
+        let nr_of_steps_between_exports = 100;
+        let simulation_variant = None;
         EngineConfig {
             // systems,
             // interactions,
@@ -31,6 +33,7 @@ impl EngineConfig {
             export_variant,
             last_export_step_id,
             nr_of_steps_between_exports,
+            simulation_variant,
         }
     }
 }

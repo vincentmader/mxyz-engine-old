@@ -1,9 +1,6 @@
 use super::config::EngineConfig;
 use super::state::State;
 use mxyz_universe::preset::SimulationVariant;
-use std::sync::mpsc;
-
-type M = usize; // TODO
 
 /// MXYZ Simulation Engine
 pub struct Engine {
@@ -27,7 +24,7 @@ impl Engine {
     }
 
     /// Initializes state & config
-    pub fn init(&mut self, simulation_variant: &Option<SimulationVariant>) {
+    pub fn init(&mut self, simulation_variant: Option<SimulationVariant>) {
         println!("MXYZ-Engine: Initializing...");
         let mut initial_state = State::new();
         initial_state.init(simulation_variant, &mut self.config);
@@ -70,8 +67,6 @@ impl Engine {
             })
             .map(|state| state.state_id)
             .collect();
-
-        // println!("unsaved state-ids: {:?}", a);
         a
     }
 }

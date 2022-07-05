@@ -8,11 +8,11 @@ use mxyz_universe::system::System;
 
 /// Initialize State & Config
 pub fn initialize(
-    simulation_variant: &Option<SimulationVariant>,
+    simulation_variant: Option<SimulationVariant>,
     config: &mut EngineConfig,
 ) -> Vec<System> {
     let mut systems = vec![];
-    match simulation_variant {
+    match &simulation_variant {
         None => {}
         Some(id) => match id {
             SimulationVariant::ThreeBodyFigureEight => {
@@ -22,5 +22,6 @@ pub fn initialize(
             _ => todo!(),
         },
     }
+    config.simulation_variant = simulation_variant;
     systems
 }

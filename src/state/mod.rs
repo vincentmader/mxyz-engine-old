@@ -22,10 +22,10 @@ impl State {
     /// Initializes State & configuration
     pub fn init(
         &mut self,
-        simulation_variant: &Option<SimulationVariant>,
+        simulation_variant: Option<SimulationVariant>,
         config: &mut EngineConfig,
     ) {
-        self.systems = preset::initialize(&simulation_variant, config);
+        self.systems = preset::initialize(simulation_variant, config);
     }
 
     /// Forwards State
