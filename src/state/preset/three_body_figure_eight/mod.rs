@@ -8,11 +8,12 @@ use mxyz_universe::system::System;
 // use crate::system::SystemVariant;
 
 // const NR_OF_STEPS: usize = 2221;
+const NR_OF_STEPS: usize = 10;
 
-pub fn preset(_systems: &mut Vec<System>, _config: &mut EngineConfig) {
+pub fn preset(_systems: &mut Vec<System>, config: &mut EngineConfig) {
     //// I. SYSTEMS
     //// ========================================================================
-    //config.step_id.1 = NR_OF_STEPS;
+    config.step_id.1 = NR_OF_STEPS;
 
     //// System 0: Objects
     //// ------------------------------------------------------------------------

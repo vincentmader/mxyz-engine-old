@@ -6,12 +6,12 @@ use mxyz_universe::entity;
 use mxyz_universe::system::planets::Planets;
 use mxyz_universe::system::{System, SystemVariant};
 
-const NR_OF_STEPS: usize = 10;
+// const NR_OF_STEPS: usize = 10;
 
 pub fn preset(systems: &mut Vec<System>, config: &mut EngineConfig) {
     // I. SYSTEMS
     // ========================================================================
-    config.step_id.1 = NR_OF_STEPS;
+    // config.step_id.1 = NR_OF_STEPS;
 
     // System 0: Objects
     // ------------------------------------------------------------------------

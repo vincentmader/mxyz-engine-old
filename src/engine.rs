@@ -11,18 +11,11 @@ pub struct Engine {
     pub engine_id: usize,
     pub config: EngineConfig,
     pub states: Vec<State>,
-    tx: mpsc::Sender<M>,
-    rx: mpsc::Receiver<M>,
 }
 
 impl Engine {
     /// Creates a new engine instance
-    pub fn new(
-        client_id: usize,
-        engine_id: usize,
-        rx: mpsc::Receiver<M>,
-        tx: mpsc::Sender<M>,
-    ) -> Self {
+    pub fn new(client_id: usize, engine_id: usize) -> Self {
         let config = EngineConfig::new();
         let states = vec![];
         Engine {
@@ -30,8 +23,6 @@ impl Engine {
             engine_id,
             config,
             states,
-            rx,
-            tx,
         }
     }
 
@@ -55,16 +46,11 @@ impl Engine {
     pub fn step(&mut self) {
         // Load current state.
         let current_state = &self.states[self.config.step_id.0];
-        // Forward state to next time-step.
+
+        // Forward to next time-step.
         let next = current_state.next(&self.config, &self.states);
         self.states.push(next);
         self.config.step_id.0 += 1;
-        // Export states every few time-steps.
-        if self.config.step_id.0 % self.config.nr_of_steps_between_exports == 0 {
-            // self.export();
-            // self.tx.send();
-            // TODO send to engine
-        }
     }
 
     pub fn send(&self) {}
