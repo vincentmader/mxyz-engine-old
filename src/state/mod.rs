@@ -6,7 +6,7 @@ use mxyz_universe::system::System;
 use serde::{Deserialize, Serialize};
 
 /// State
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct State {
     pub state_id: usize,
     pub systems: Vec<System>,
@@ -42,7 +42,6 @@ impl State {
         /// Loops over systems & forwards each
         for system in &current_state.systems {
             let mut next_system = system.clone();
-
             /// Gets all Integrators for this System & loops over them
             let integrators = tmp::get_integrators(&system, &config).unwrap();
             for integrator in integrators {
