@@ -1,17 +1,17 @@
 use crate::config::EngineConfig;
 use crate::integrator::Integrator;
-use crate::state::State;
+use mxyz_universe::state::State;
 use mxyz_universe::system::System;
 
-pub fn get_integrators<'a>(
-    system: &System,
-    config: &'a EngineConfig,
-) -> Option<&'a Vec<Integrator>> {
-    match config.integrators.get(system.system_id) {
-        None => None,
-        Some(vec) => Some(vec),
-    }
-}
+// pub fn get_integrators<'a>(
+//     system: &System,
+//     config: &'a EngineConfig,
+// ) -> Option<&'a Vec<Integrator>> {
+//     match config.integrators.get(system.system_id) {
+//         None => None,
+//         Some(vec) => Some(vec),
+//     }
+// }
 
 pub fn prepare_neighborhoods() -> Vec<fn() -> Vec<usize>> {
     // TODO create neighborhoods

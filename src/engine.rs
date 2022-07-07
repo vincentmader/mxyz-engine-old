@@ -1,6 +1,9 @@
 use super::config::EngineConfig;
-use super::state::State;
+use crate::tmp;
 use mxyz_universe::preset::SimulationVariant;
+use mxyz_universe::state::State;
+use mxyz_universe::system::System;
+use serde::{Deserialize, Serialize};
 
 /// MXYZ Simulation Engine
 pub struct Engine {
@@ -25,7 +28,7 @@ impl Engine {
     pub fn init(&mut self, simulation_variant: Option<SimulationVariant>) {
         println!("MXYZ-Engine: Initializing...");
         let mut initial_state = State::new();
-        initial_state.init(simulation_variant, &mut self.config);
+        // initial_state.init(simulation_variant, &mut self.config);
         self.states.push(initial_state);
     }
 
@@ -39,12 +42,35 @@ impl Engine {
 
     /// Forwards engine by one time-step
     pub fn step(&mut self) {
-        // Load current state.
+        /// Loads current State
         let current_state = &self.states[self.config.step_id.0];
 
+        let mut next_state = State::new();
+        next_state.state_id = current_state.state_id + 1;
+
+        /// Creates "neighborhoods"
+        // let _neighborhoods = tmp::prepare_neighborhoods(); // TODO get relevant neighbors/nodes
+
+        /// Loops over systems & forwards each
+        for system in &current_state.systems {
+            let mut next_system = system.clone();
+            /// Gets all Integrators for this System & loops over them
+            for integrator in system.integrators.iter() {
+                /// Gets all Interacting Systems for this Interaction
+                // let other_ids = tmp::get_other_ids(&integrator, &current_state);
+                let other_ids: Vec<usize> = todo!();
+                /// Applies Interaction
+                // integrator.step(&mut next_system, &current_state, &other_ids);
+                match integrator {
+                    _ => todo!(),
+                }
+            }
+            next_state.systems.push(next_system);
+        }
+
         // Forward to next time-step.
-        let next = current_state.next(&self.config, &self.states);
-        self.states.push(next);
+        // let next = current_state.next(&self.config, &self.states);
+        self.states.push(next_state);
         self.config.step_id.0 += 1;
     }
 
