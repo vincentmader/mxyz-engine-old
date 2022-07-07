@@ -1,8 +1,11 @@
 use crate::config::EngineConfig;
-use crate::integrator::{Integrator, IntegratorVariant};
-use crate::interaction::force::{Force, ForceVariant};
-use crate::interaction::{Interaction, InteractionVariant};
+use crate::integrator::Integrator;
+use crate::interaction::Interaction;
 use mxyz_universe::entity;
+use mxyz_universe::integrator::IntegratorVariant;
+use mxyz_universe::interaction::force::Force;
+use mxyz_universe::interaction::force::ForceVariant;
+use mxyz_universe::interaction::InteractionVariant;
 use mxyz_universe::system::planets::Planets;
 use mxyz_universe::system::{System, SystemVariant};
 
@@ -29,7 +32,7 @@ pub fn preset(systems: &mut Vec<System>, config: &mut EngineConfig) {
     let system = System::new(system_id, variant);
     systems.push(system);
 
-    // III.INTEGRATORS
+    // II.INTEGRATORS
     // ========================================================================
 
     // System 0: Objects

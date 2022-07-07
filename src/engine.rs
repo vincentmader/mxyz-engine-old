@@ -4,7 +4,6 @@ use mxyz_universe::preset::SimulationVariant;
 
 /// MXYZ Simulation Engine
 pub struct Engine {
-    pub client_id: usize,
     pub engine_id: usize,
     pub config: EngineConfig,
     pub states: Vec<State>,
@@ -12,11 +11,10 @@ pub struct Engine {
 
 impl Engine {
     /// Creates a new engine instance
-    pub fn new(client_id: usize, engine_id: usize) -> Self {
+    pub fn new(engine_id: usize) -> Self {
         let config = EngineConfig::new();
         let states = vec![];
         Engine {
-            client_id,
             engine_id,
             config,
             states,

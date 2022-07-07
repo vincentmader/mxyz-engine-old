@@ -7,17 +7,7 @@ pub mod interaction_matrix;
 pub mod ising;
 mod testing;
 use interaction_matrix::InteractionVector;
-
-/// Interaction Variant
-#[derive(Debug)]
-pub enum InteractionVariant {
-    Force(force::Force),
-    Collision(collision::Collision),
-    // Diffusion(diffusion::Diffusion),
-    // GameOfLife(game_of_life::GameOfLife),
-    // Ising(ising::Ising),
-    // Composed(Box<dyn InteractionTrait>),
-}
+use mxyz_universe::interaction::InteractionVariant;
 
 /// Interaction
 #[derive(Debug)]
