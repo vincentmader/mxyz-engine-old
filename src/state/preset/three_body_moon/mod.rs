@@ -15,15 +15,18 @@ pub fn preset(systems: &mut Vec<System>, config: &mut EngineConfig) {
     // I. SYSTEMS
     // ========================================================================
     // config.step_id.1 = NR_OF_STEPS;
+    let M: f64 = 1.;
+    let G = 1.;
+    let r = 2.;
 
     // System 0: Objects
     // ------------------------------------------------------------------------
     let system_id = 0;
     let mut system = Planets::new();
-    let speed = 0.;
+    let speed = (G * M / r).powf(0.5);
     for entity_id in 0..2 {
-        let m = 1.;
-        let x = [2. * (entity_id as f64 - 0.5), 0., 0.];
+        let m = M;
+        let x = [r * (entity_id as f64 - 0.5), 0., 0.];
         let v = [0., speed * (2. * entity_id as f64 - 1.), 0.];
         let entity = entity::object::planet::Planet::new(m, x, v);
         system.entities.push(entity);
